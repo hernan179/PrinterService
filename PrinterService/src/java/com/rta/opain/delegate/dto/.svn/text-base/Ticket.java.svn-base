@@ -1,0 +1,233 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package sale;
+
+import com.rta.aeropuerto.domain.CajerosAero;
+import java.sql.Timestamp;
+
+/**
+ *
+ * @author Arquitecto java
+ */
+public class Ticket {
+
+    String fecha;
+    String valor;
+    String origen;
+    String destino;
+    String empresa;
+    String firma;
+    int distancia;
+    int unidades;
+    CajerosAero usuario;
+    String placa;
+    String tipoPago;
+    Long nit;
+    Long id;
+    int iva;
+    String valorServicio;
+    String conductor;
+    int cuotaAdmon;
+    int total;
+    int movil;
+    String hora;
+    String _2300;
+    String val_conduct;
+
+    public String getVal_conduct() {
+        return val_conduct;
+    }
+
+    public void setVal_conduct(String val_conduct) {
+        this.val_conduct = val_conduct;
+    }
+
+   
+
+    
+
+    public String getHora() {
+        return hora;
+    }
+
+    public String get2300() {
+        return _2300;
+    }
+
+    public void set2300(String _2300) {
+        this._2300 = _2300;
+    }
+
+    public void setHora(String hora) {
+        this.hora = hora;
+    }
+    
+
+    public int getMovil() {
+        return movil;
+    }
+
+    public void setMovil(int movil) {
+        this.movil = movil;
+    }
+    
+
+    public String getConductor() {
+        return conductor;
+    }
+
+    public void setConductor(String conductor) {
+        this.conductor = conductor;
+    }
+
+    public int getCuotaAdmon() {
+        return cuotaAdmon;
+    }
+
+    public void setCuotaAdmon(int cuotaAdmon) {
+        this.cuotaAdmon = cuotaAdmon;
+    }
+
+    public int getIva() {
+        return iva;
+    }
+
+    public void setIva(int iva) {
+        this.iva = iva;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+
+    
+    
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    
+
+    public Long getNit() {
+        return nit;
+    }
+
+    public void setNit(Long nit) {
+        this.nit = nit;
+    }
+
+
+
+    public String getTipoPago() {
+        return tipoPago;
+    }
+
+    public CajerosAero getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(CajerosAero usuario) {
+        this.usuario = usuario;
+    }
+
+    public String getValor() {
+        return valor;
+    }
+
+    public void setValor(String valor) {
+        this.valor = valor;
+    }
+
+    public String getValorServicio() {
+        return valorServicio;
+    }
+
+    public void setValorServicio(String valorServicio) {
+        this.valorServicio = valorServicio;
+    }
+
+    
+    public void setTipoPago(String tipoPago) {
+        this.tipoPago = tipoPago;
+    }
+    
+
+    public String getPlaca() {
+        return placa;
+    }
+
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
+
+
+
+    public int getDistancia() {
+        return distancia;
+    }
+
+    public void setDistancia(int distancia) {
+        this.distancia = distancia;
+    }
+
+    public int getUnidades() {
+        return unidades;
+    }
+
+    public void setUnidades(int unidades) {
+        this.unidades = unidades;
+    }
+
+    public String getFirma() {
+        return firma;
+    }
+
+    public void setFirma(String firma) {
+        this.firma = firma;
+    }
+
+    public String getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(String empresa) {
+        this.empresa = empresa;
+    }
+
+    public String getDestino() {
+        return destino;
+    }
+
+    public void setDestino(String destino) {
+        this.destino = destino;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    public String getOrigen() {
+        return origen;
+    }
+
+    public void setOrigen(String origen) {
+        this.origen = origen;
+    }
+
+
+}

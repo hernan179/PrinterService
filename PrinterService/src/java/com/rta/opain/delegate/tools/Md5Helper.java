@@ -1,0 +1,59 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.rta.opain.delegate.tools;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+/**
+ *
+ * @author Arquitecto java
+ */
+public class Md5Helper {
+
+    private static final char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".toCharArray();
+
+    public static String encodeMD5(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte hash[] = md.digest(password.getBytes());
+            password = String.copyValueOf(encodeBase64(hash));
+        } catch (NoSuchAlgorithmException ex) {
+        }
+        return password;
+    }
+
+    private static char[] encodeBase64(byte[] data) {
+        char[] out = new char[((data.length + 2) / 3) * 4];
+        //
+        // 3 bytes encode to 4 chars.  Output is always an even
+        // multiple of 4 characters.
+        //
+        for (int i = 0, index = 0; i < data.length; i += 3, index += 4) {
+            boolean quad = false;
+            boolean triple = false;
+            //convert to unsigned byte
+            int val = (0xFF & (int) data[i]);
+            val <<= 8;
+            if ((i + 1) < data.length) {
+                val |= (0xFF & (int) data[i + 1]);
+                triple = true;
+            }
+            val <<= 8;
+            if ((i + 2) < data.length) {
+                val |= (0xFF & (int) data[i + 2]);
+                quad = true;
+            }
+            out[index + 3] = alphabet[(quad ? (val & 0x3F) : 64)];
+            val >>= 6;
+            out[index + 2] = alphabet[(triple ? (val & 0x3F) : 64)];
+            val >>= 6;
+            out[index + 1] = alphabet[val & 0x3F];
+            val >>= 6;
+            out[index + 0] = alphabet[val & 0x3F];
+        }
+        return out;
+    }
+}

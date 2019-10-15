@@ -1,0 +1,132 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.rta.aeropuerto.domain;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ *
+ * @author hsancheza
+ */
+@Entity
+@Table(name = "tarifas_aero")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "TarifasAero.findAll", query = "SELECT t FROM TarifasAero t"),
+    @NamedQuery(name = "TarifasAero.findById", query = "SELECT t FROM TarifasAero t WHERE t.id = :id"),
+    @NamedQuery(name = "TarifasAero.findByValor", query = "SELECT t FROM TarifasAero t WHERE t.valor = :valor"),
+    @NamedQuery(name = "TarifasAero.findByPorcentual", query = "SELECT t FROM TarifasAero t WHERE t.porcentual = :porcentual"),
+    @NamedQuery(name = "TarifasAero.findByIva", query = "SELECT t FROM TarifasAero t WHERE t.iva = :iva"),
+    @NamedQuery(name = "TarifasAero.findByIncremento", query = "SELECT t FROM TarifasAero t WHERE t.incremento = :incremento"),
+    @NamedQuery(name = "TarifasAero.findByLlave", query = "SELECT t FROM TarifasAero t WHERE t.llave = :llave")})
+public class TarifasAero implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Basic(optional = false)
+    @Column(name = "valor")
+    private Long valor;
+    @Basic(optional = false)
+    @Column(name = "porcentual")
+    private Long porcentual;
+    @Column(name = "iva")
+    private Long iva;
+    @Column(name = "incremento")
+    private Long incremento;
+    @Column(name = "llave")
+    private Integer llave;
+
+    public TarifasAero() {
+    }
+
+    public TarifasAero(Integer id) {
+        this.id = id;
+    }
+
+    public TarifasAero(Integer id, Long valor, Long porcentual) {
+        this.id = id;
+        this.valor = valor;
+        this.porcentual = porcentual;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Long getValor() {
+        return valor;
+    }
+
+    public void setValor(Long valor) {
+        this.valor = valor;
+    }
+
+    public Long getPorcentual() {
+        return porcentual;
+    }
+
+    public void setPorcentual(Long porcentual) {
+        this.porcentual = porcentual;
+    }
+
+    public Long getIva() {
+        return iva;
+    }
+
+    public void setIva(Long iva) {
+        this.iva = iva;
+    }
+
+    public Long getIncremento() {
+        return incremento;
+    }
+
+    public void setIncremento(Long incremento) {
+        this.incremento = incremento;
+    }
+
+    public Integer getLlave() {
+        return llave;
+    }
+
+    public void setLlave(Integer llave) {
+        this.llave = llave;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof TarifasAero)) {
+            return false;
+        }
+        TarifasAero other = (TarifasAero) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "com.rta.aeropuerto.domain.TarifasAero[ id=" + id + " ]";
+    }
+    
+}

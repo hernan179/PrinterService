@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://srvapp-desarrollo.losunos.net:8080/Aeropuerto/WebServiceRadiolocalizadorAero?wsdl" uri="wsdl/srvapp-desarrollo.losunos.net_8080/Aeropuerto/WebServiceRadiolocalizadorAero.wsdl"/>
+    <system systemId="http://srvapp-central.losunos.net:8080/Aeropuerto/WebServiceRadiolocalizadorAero?wsdl" uri="wsdl/srvapp-central.losunos.net_8080/Aeropuerto/WebServiceRadiolocalizadorAero.wsdl"/>
+    <system systemId="http://srvapp-aero.losunos.net:8080/Aeropuerto/WebServiceRadiolocalizadorAero?wsdl" uri="wsdl/srvapp-aero.losunos.net_8080/Aeropuerto/WebServiceRadiolocalizadorAero.wsdl"/>
+    <system systemId="http://192.168.20.53:8080/Aeropuerto/WebServiceRadiolocalizadorAero?wsdl" uri="wsdl/192.168.20.53_8080/Aeropuerto/WebServiceRadiolocalizadorAero.wsdl"/>
+</catalog>

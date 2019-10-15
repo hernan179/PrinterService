@@ -1,0 +1,533 @@
+package com.rta.opain.delegate.dto;
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.draw.LineSeparator;
+import com.rta.opain.delegate.tools.InitHelper;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Properties;
+import javax.print.*;
+import javax.swing.ImageIcon;
+
+/**
+ *
+ * @author hernan
+ */
+public class CreateDocument {
+
+    //antes Rectangle pageSize = new Rectangle(300, 450);
+    Rectangle pageSize = new Rectangle(260, 500);
+    //Rectangle pageSize = new Rectangle(300, 500);//opcion bluttoo
+    //Document document = new Document(pageSize); // OK
+    //Document document = new Document(PageSize._11X17); // mas grande
+    Document document = new Document(pageSize);// mas grande 
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    PdfWriter writer = getPdfWriter(document, baos);
+    static SimpleDateFormat smdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    public byte[] generarFactura(Ticket tiquete, Properties pr, String reimpresion) throws Exception {
+
+        document.open();
+
+        Image LOGO = null;
+        try {
+            LOGO = Image.getInstance(getImage("/images/logo_viajes_imperial.jpg"));
+        } catch (Exception e) {
+        }
+
+        Paragraph CONTRATO = new Paragraph(pr.getProperty("CONTRATO"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph ACEPTO = new Paragraph(pr.getProperty("ACEPTO"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph ACEPTO2 = new Paragraph(pr.getProperty("ACEPTO2"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph FIRMA = new Paragraph(pr.getProperty("FIRMA"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph FIRMA_RAYA = new Paragraph(pr.getProperty("FIRMA_RAYA"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph FIRMA2 = new Paragraph(pr.getProperty("FIRMA2"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph FIRMA_RAYA2 = new Paragraph(pr.getProperty("FIRMA_RAYA2"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+
+        Paragraph GRUPOS = new Paragraph(pr.getProperty("GRUPOS"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph CONTRATISTA = new Paragraph(pr.getProperty("GRUPOS"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+
+
+        Paragraph NIT = new Paragraph(pr.getProperty("NIT"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph LINEA = new Paragraph(pr.getProperty("LINEA"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph RESOLUCION = new Paragraph(pr.getProperty("RESOLUCION"), new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.BOLD));
+        Paragraph RESOLUCION_EX = new Paragraph(pr.getProperty("FECHA"), new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.BOLD));
+        Paragraph RESOLUCION_EX3 = new Paragraph(pr.getProperty("INTERVALO"), new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.BOLD));
+        Paragraph RESOLUCION_EX4 = new Paragraph(pr.getProperty("CODIGO"), new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.BOLD));
+        Paragraph RESOLUCION_EX5 = new Paragraph(pr.getProperty("AVENIDA"), new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.BOLD));
+
+        Paragraph FACTURA = new Paragraph(pr.getProperty("FACTURA"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph FACTURA_EX = new Paragraph(pr.getProperty("TAX") + tiquete.getId(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+
+        Paragraph FECHA = new Paragraph("Fecha: ", new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph FECHA_EX = new Paragraph(smdf.format(tiquete.getFecha()), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+
+        Paragraph PLACA = new Paragraph(pr.getProperty("PLACA"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph PLACA_EX = new Paragraph(tiquete.getPlaca(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+
+
+
+        Paragraph MARCA = new Paragraph(pr.getProperty("MARCA"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph MARCA_EX = new Paragraph(tiquete.getMarca(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+
+
+        Paragraph MODELO = new Paragraph(pr.getProperty("MODELO"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph MODELO_EX = new Paragraph(tiquete.getModelo(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+
+
+
+
+
+        Paragraph ATENDIDO = new Paragraph(pr.getProperty("ATENDIDO"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph ATENDIDO_EX = new Paragraph(tiquete.getUsuario().getNombre(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+
+        Paragraph ORIGEN = new Paragraph("Origen:", new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph ORIGEN_EX = new Paragraph(pr.getProperty("ORIGEN"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+
+        Paragraph DESTINO = new Paragraph(pr.getProperty("DESTINO"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        int tamanio = tiquete.getDestino().length() < 10 ? 10 : 8;
+        Paragraph DESTINO_EX = new Paragraph(tiquete.getDestino(), new Font(Font.FontFamily.TIMES_ROMAN, tamanio, Font.BOLD));
+
+
+        Paragraph PASAJERO = new Paragraph(pr.getProperty("PASAJERO"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph PASAJERO_EX = new Paragraph(tiquete.getPasajero(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+
+
+
+        Paragraph NOMBRE_CLI = new Paragraph("Nombre Contratante", new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph NIT_CLI = new Paragraph(tiquete.getNombre() + " " + tiquete.getNit(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+
+        Paragraph TOTAL = new Paragraph(pr.getProperty("TOTAL"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph TOTAL_EX = new Paragraph("$ " + tiquete.getValor(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+
+        //Paragraph NOTA = new Paragraph(pr.getProperty("NOTA"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+
+
+        Paragraph CONDUCTOR = new Paragraph(pr.getProperty("CONDUCTOR"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph CONDUCTOR_EX = new Paragraph(tiquete.getConductor(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+
+        Paragraph ESPACIO = new Paragraph("", new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+
+        Paragraph SENOR = new Paragraph(pr.getProperty("SENOR"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+        Paragraph COPIA_USUARIO = new Paragraph("--COPIA USUARIO--", new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+
+
+
+        Paragraph COPIA_CONDUCTOR = new Paragraph("--COPIA CONDUCTOR--", new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+
+        PdfPTable tLogo_1 = new PdfPTable(3);
+        tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+        tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+
+        tLogo_1.addCell(obtenerCellColspamBanner(LOGO));
+        tLogo_1.addCell(obtenerCellColspamBanner(CONTRATO));
+
+        tLogo_1.addCell(obtenerCellColspamBannerLeft(ACEPTO));
+        tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+        tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+        tLogo_1.addCell(obtenerCellColspamBannerLeft(FIRMA_RAYA));
+        tLogo_1.addCell(obtenerCellColspamBannerLeft(FIRMA));
+        tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+        tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+        tLogo_1.addCell(obtenerCellColspamBannerLeft(FIRMA_RAYA));
+
+        tLogo_1.addCell(obtenerCellColspamBannerLeft(FIRMA2));
+
+
+        tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+        tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+
+        tLogo_1.addCell(obtenerCellColspamBanner(LOGO));
+
+        tLogo_1.addCell(obtenerCellColspamBanner(NIT));
+        tLogo_1.addCell(obtenerCellColspamBanner(LINEA));
+
+
+
+
+        tLogo_1.addCell(obtenerCell(FACTURA));
+        tLogo_1.addCell(obtenerCellColspam2(FACTURA_EX));
+
+        tLogo_1.addCell(obtenerCell(FECHA));
+        tLogo_1.addCell(obtenerCellColspam2(FECHA_EX));
+
+        tLogo_1.addCell(obtenerCell(PLACA));
+        tLogo_1.addCell(obtenerCellColspam2(PLACA_EX));
+
+        tLogo_1.addCell(obtenerCell(MARCA));
+        tLogo_1.addCell(obtenerCellColspam2(MARCA_EX));
+
+        tLogo_1.addCell(obtenerCell(MODELO));
+        tLogo_1.addCell(obtenerCellColspam2(MODELO_EX));
+
+        tLogo_1.addCell(obtenerCell(CONDUCTOR));
+        tLogo_1.addCell(obtenerCellColspam2(CONDUCTOR_EX));
+
+        tLogo_1.addCell(obtenerCell(ORIGEN));
+        tLogo_1.addCell(obtenerCellColspam2(ORIGEN_EX));
+
+        tLogo_1.addCell(obtenerCell(DESTINO));
+        tLogo_1.addCell(obtenerCellColspam2(DESTINO_EX));
+
+
+
+
+
+
+        if (NOMBRE_CLI != null && !NOMBRE_CLI.isEmpty()) {
+            tLogo_1.addCell(obtenerCell(NOMBRE_CLI));
+            tLogo_1.addCell(obtenerCellColspam2(NIT_CLI));
+        } else {
+            tLogo_1.addCell(obtenerCell(new Paragraph(" - ")));
+            tLogo_1.addCell(obtenerCellColspam2(new Paragraph(" - ")));
+        }
+        tLogo_1.addCell(obtenerCell(PASAJERO));
+        tLogo_1.addCell(obtenerCellColspam2(PASAJERO_EX));
+
+        tLogo_1.addCell(obtenerCell(TOTAL));
+        tLogo_1.addCell(obtenerCellColspam2(TOTAL_EX));
+
+        tLogo_1.addCell(obtenerCell(ATENDIDO));
+        tLogo_1.addCell(obtenerCellColspam2(ATENDIDO_EX));
+
+
+        tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+
+        //hsa tLogo_1.addCell(obtenerCellColspamBanner(NOTA));
+        //tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+        tLogo_1.addCell(obtenerCellColspamBanner(SENOR));
+        //tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+        //tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+        tLogo_1.addCell(obtenerCellColspamBanner(COPIA_USUARIO));
+
+
+
+
+        tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+        tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+        tLogo_1.addCell(obtenerCellColspamBanner(LOGO));
+
+        tLogo_1.addCell(obtenerCellColspamBanner(NIT));
+        tLogo_1.addCell(obtenerCellColspamBanner(LINEA));
+ 
+
+
+        tLogo_1.addCell(obtenerCell(FACTURA));
+        tLogo_1.addCell(obtenerCellColspam2(FACTURA_EX));
+
+        tLogo_1.addCell(obtenerCell(FECHA));
+        tLogo_1.addCell(obtenerCellColspam2(FECHA_EX));
+
+        tLogo_1.addCell(obtenerCell(PLACA));
+        tLogo_1.addCell(obtenerCellColspam2(PLACA_EX));
+
+        tLogo_1.addCell(obtenerCell(MARCA));
+        tLogo_1.addCell(obtenerCellColspam2(MARCA_EX));
+
+        tLogo_1.addCell(obtenerCell(MODELO));
+        tLogo_1.addCell(obtenerCellColspam2(MODELO_EX));
+
+
+
+        tLogo_1.addCell(obtenerCell(CONDUCTOR));
+        tLogo_1.addCell(obtenerCellColspam2(CONDUCTOR_EX));
+
+        tLogo_1.addCell(obtenerCell(ORIGEN));
+        tLogo_1.addCell(obtenerCellColspam2(ORIGEN_EX));
+
+        tLogo_1.addCell(obtenerCell(DESTINO));
+        tLogo_1.addCell(obtenerCellColspam2(DESTINO_EX));
+
+
+
+
+
+
+        if (NOMBRE_CLI != null && !NOMBRE_CLI.isEmpty()) {
+            tLogo_1.addCell(obtenerCell(NOMBRE_CLI));
+            tLogo_1.addCell(obtenerCellColspam2(NIT_CLI));
+        } else {
+            tLogo_1.addCell(obtenerCell(new Paragraph(" - ")));
+            tLogo_1.addCell(obtenerCellColspam2(new Paragraph(" - ")));
+        }
+        tLogo_1.addCell(obtenerCell(PASAJERO));
+        tLogo_1.addCell(obtenerCellColspam2(PASAJERO_EX));
+
+        tLogo_1.addCell(obtenerCell(TOTAL));
+        tLogo_1.addCell(obtenerCellColspam2(TOTAL_EX));
+
+        tLogo_1.addCell(obtenerCell(ATENDIDO));
+        tLogo_1.addCell(obtenerCellColspam2(ATENDIDO_EX));
+
+
+        tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+
+        // tLogo_1.addCell(obtenerCellColspamBanner(NOTA));
+        //tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+        tLogo_1.addCell(obtenerCellColspamBanner(SENOR));
+        //tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+        //tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+        tLogo_1.addCell(obtenerCellColspamBanner(COPIA_CONDUCTOR));
+
+        document.add(tLogo_1);
+
+
+
+        document.close();
+        try {
+            // OutputStream rutaArchivo = new FileOutputStream("C:/temp/pdf_.pdf");
+            // baos.writeTo(rutaArchivo);
+        } catch (RuntimeException e) {
+        }
+        return baos.toByteArray();
+    }
+
+    private PdfWriter getPdfWriter(Document doc, OutputStream os) {
+
+        PdfWriter out = null;
+
+        try {
+            out = PdfWriter.getInstance(doc, os);
+        } catch (Exception ex) {
+        }
+
+        return out;
+    }
+
+    public PdfPCell obtenerCellColspamBanner(Object contendio) {
+        PdfPCell cell = null;
+
+        if (contendio instanceof Image) {
+            Image img = (Image) contendio;
+            cell = new PdfPCell(img);
+            cell.addElement(img);
+        } else if (contendio instanceof Paragraph) {
+            Paragraph txt = (Paragraph) contendio;
+            cell = new PdfPCell(txt);
+        } else {
+            cell = new PdfPCell(new Paragraph(" "));
+        }
+        cell.setColspan(3);
+        cell.setPadding(0);
+        cell.setBorder(0);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        return cell;
+    }
+
+    public PdfPCell obtenerCellColspamBannerLeft(Object contendio) {
+        PdfPCell cell = null;
+
+        if (contendio instanceof Image) {
+            Image img = (Image) contendio;
+            cell = new PdfPCell(img);
+            cell.addElement(img);
+        } else if (contendio instanceof Paragraph) {
+            Paragraph txt = (Paragraph) contendio;
+            cell = new PdfPCell(txt);
+        } else {
+            cell = new PdfPCell(new Paragraph(" "));
+        }
+        cell.setColspan(3);
+        cell.setPadding(0);
+        cell.setBorder(0);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        return cell;
+    }
+
+    public PdfPCell obtenerCellColspam2(Paragraph contendio) {
+        return obtenerCell(2, contendio);
+
+    }
+
+    public PdfPCell obtenerCell(Paragraph contendio) {
+        return obtenerCell(0, contendio);
+
+    }
+
+    public PdfPCell obtenerCell(int colSpam, Paragraph contendio) {
+        PdfPCell cell = null;
+        if (colSpam == 3) {
+            cell = new PdfPCell(contendio);
+        } else if (colSpam == 2) {
+            cell = new PdfPCell(contendio);
+        } else {
+            cell = new PdfPCell(contendio);
+        }
+        cell.setColspan(colSpam);
+        cell.setPadding(0);
+        cell.setBorder(0);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        return cell;
+    }
+
+    protected Image getImage(String url) {
+
+        Image img = null;
+
+        try {
+            ImageIcon imageIcon = new ImageIcon(getClass().getResource(url));
+            java.awt.Image image = imageIcon.getImage();
+            img = Image.getInstance(writer, image, 1);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (BadElementException ex) {
+            ex.printStackTrace();
+        }
+
+        return img;
+    }
+
+    int sizeWord() {
+        return 6;
+    }
+
+    public void print() {
+        DocFlavor flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
+        PrintService[] services = PrintServiceLookup.lookupPrintServices(flavor, null);
+        FileInputStream psStream = null;
+        try {
+            psStream = new FileInputStream("c:\\test.pdf");
+        } catch (FileNotFoundException ffne) {
+            ffne.printStackTrace();
+        }
+        if (psStream == null) {
+            return;
+        }
+        if (services.length > 0) {
+            PrintService myService = null;
+            for (PrintService service : services) {
+                System.out.println(service.getName());
+                if (service.getName().contains("my printer")) {
+                    myService = service;
+                    break;
+                }
+            }
+            DocPrintJob printJob = myService.createPrintJob();
+            Doc document = new SimpleDoc(psStream, flavor, null);
+            try {
+                printJob.print(document, null);
+            } catch (PrintException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("No PDF printer available.");
+        }
+    }
+
+    public byte[] generarCierreFactura(Cierre tk, boolean control, Properties pr) throws Exception {
+        document.open();
+        Image LOGO = null;
+        try {
+            LOGO = Image.getInstance(getImage("/images/logo_viajes_imperial.jpg"));
+        } catch (Exception e) {
+        }
+        Paragraph VIAJES = new Paragraph(pr.getProperty("VIAJES"), new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+
+        Paragraph NIT = new Paragraph(pr.getProperty("NIT"), new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+        Paragraph AV = new Paragraph(pr.getProperty("AVENIDA"), new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+
+        String ini = "" + tk.getInicio();
+        String fin = "" + "" + tk.getValor();
+        Paragraph TEXT_INICIO = new Paragraph("INICIO : ", new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+        Paragraph INICIO = new Paragraph(ini, new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+        Paragraph TEXT_CANTIDAD = new Paragraph("TIQUETES : ", new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+        Paragraph CANTIDAD = new Paragraph("" + tk.getCantidad(), new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+        Paragraph FIN = new Paragraph(tk.getFin().toString(), new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+        Paragraph TEXT_FIN = new Paragraph("FINAL :", new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+        Paragraph VALOR = new Paragraph(fin, new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+        Paragraph TEXT_VALOR = new Paragraph("TOTAL: ", new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+        Paragraph VALOR_TOTAL = new Paragraph("" + tk.getValorTotal(), new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+
+
+        Paragraph TEXT_VALORE = new Paragraph("EFECTIVO: ", new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+        Paragraph VALOR_VALORE = new Paragraph("" + tk.getValorE(), new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+
+        Paragraph TEXT_VALORD = new Paragraph("DEBITO: ", new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+        Paragraph VALOR_VALORD = new Paragraph("" + tk.getValorD(), new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+
+        Paragraph TEXT_VALORC = new Paragraph("CREDITO: ", new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+        Paragraph VALOR_VALORC = new Paragraph("" + tk.getValorC(), new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+
+
+        Paragraph TEXT_SITIO = new Paragraph("EMITIDO EN : ", new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+        Paragraph SITIO = new Paragraph("" + tk.getSitioNombre(), new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+        Paragraph TEXT_USUARIO = new Paragraph("CAJERO: ", new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+        Paragraph USUARIO = new Paragraph("" + tk.getUsuarioNombre(), new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+
+        Paragraph TEXT_FECHA = new Paragraph("FECHA:", new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+        Paragraph FECHA = new Paragraph("" + smdf.format(tk.getFecha()), new Font(Font.FontFamily.TIMES_ROMAN, sizeWord(), Font.BOLD));
+
+
+        PdfPTable cierre = new PdfPTable(1);
+        cierre.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+        cierre.getDefaultCell().setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+        cierre.addCell(LOGO);
+
+        document.add(cierre);
+
+        PdfPTable table = new PdfPTable(1);
+        table.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+        table.getDefaultCell().setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
+        table.addCell(VIAJES);
+        table.addCell(NIT);
+        table.addCell(AV);
+        document.add(table);
+
+        PdfPTable conta = new PdfPTable(2);
+        conta.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+        conta.getDefaultCell().setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+        conta.addCell(TEXT_INICIO);
+        conta.addCell(INICIO);
+
+
+        conta.addCell(TEXT_CANTIDAD);
+        conta.addCell(CANTIDAD);
+
+
+        conta.addCell(TEXT_FIN);
+        conta.addCell(FIN);
+
+
+        conta.addCell(TEXT_VALOR);
+        conta.addCell(VALOR_TOTAL);
+
+        conta.addCell(TEXT_VALORE);
+        conta.addCell(VALOR_VALORE);
+
+        conta.addCell(TEXT_VALORD);
+        conta.addCell(VALOR_VALORD);
+
+        conta.addCell(TEXT_VALORC);
+        conta.addCell(VALOR_VALORC);
+
+
+        conta.addCell(TEXT_FECHA);
+        conta.addCell(FECHA);
+
+
+        conta.addCell(TEXT_USUARIO);
+        conta.addCell(USUARIO);
+
+
+        document.add(conta);
+        document.close();
+
+        return baos.toByteArray();
+
+    }
+
+    public static void main(String[] args) {
+        System.out.println(" fecha:  " + (smdf.format(new Date())));
+    }
+}

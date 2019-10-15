@@ -1,0 +1,59 @@
+PLACA;NIT;MARCA;MODELO
+SZZ898;7307103;HYUNDAI;2013;galaxiat.jpg;yesica.jpg;Yesica Urrego
+WEV217;39547188;HYUNDAI;2014;serv.jpg;yesica.jpg;Jaime Valencia
+UFY211;79352697;HYUNDAI;2011;cootrasdorado.png;celmira.png;Celmira Aponte
+UFY081;79352697;HYUNDAI;2011;cootrasdorado.png;celmira.png;Celmira Aponte
+TFR076;52079651;HYUNDAI;2013;tocancipa.png;oscar.png;Oscar Infante
+TFR534;80172382;HYUNDAI;2013;unicornio.jpg;willpe.jpg;William Penuela
+TUK256;79385394;JAC;2013;tcalero.jpg;ramon.jpg;Ramon Garcia
+TDS069;41482347;HYUNDAI;2012;logo_viajes_imperial.jpg;firma.jpg;Marco Velasco
+SPS820;14317850;HYUNDAI;2008;cootrasdorado.png;celmira.png;Celmira Aponte
+TFQ917;19265259;HYUNDAI;2012;lobena.jpg;johnc.jpg;John Cendales
+SLG266;79418294;HYUNDAI;2008;cootrasdorado.png;celmira.png;Celmira Aponte
+SZU457;79428869;KIA;2011;cootrasdorado.png;celmira.png;Celmira Aponte
+TTO766;79879142;HYUNDAI;2014;cootrasdorado.png;celmira.png;Celmira Aponte
+UFY009;19092687;HYUNDAI;2011;cootrasdorado.png;celmira.png;Celmira Aponte
+TFQ411;79424377;HYUNDAI;2012;cootrasdorado.png;celmira.png;Celmira Aponte
+THY185;80796740;HYUNDAI;2014;cootrasdorado.png;celmira.png;Celmira Aponte
+TTO458;19290959;VOLSWAGEN;2013;cootrasdorado.png;celmira.png;Celmira Aponte
+SZW117;19356640;HYUNDAI;2012;cootrasdorado.png;celmira.png;Celmira Aponte
+SXN316;19385770;HYUNDAI;2012;cootrasdorado.png;celmira.png;Celmira Aponte
+SLJ107;15360411;HYUNDAI;2008;cootrasdorado.png;celmira.png;Celmira Aponte
+SZT394;79399488;NISSAN;2012;tourcolombia.jpg;danielzamora.jpg;Daniel Zamora
+SPM580;51658716;KIA;2010;cootrasdorado.png;celmira.png;Celmira Aponte
+SKX895;19348318;HYUNDAI;2009;cootrasdorado.png;celmira.png;Celmira Aponte
+TDK342;79468027;HYUNDAI;2012;cootrasdorado.png;celmira.png;Celmira Aponte
+TDK343;80025151;HYUNDAI;2012;cootrasdorado.png;celmira.png;Celmira Aponte
+TTQ422;1013580366;HYUNDAI;2014;cootrasdorado.png;celmira.png;Celmira Aponte
+SLJ216;79985117;HYUNDAI;2008;cootrasdorado.png;celmira.png;Celmira Aponte
+SZU920;19358801;HYUNDAI;2012;cootrasdorado.png;celmira.png;Celmira Aponte
+UFX970;80188155;HYUNDAI;2011;otte.jpg;eduardoca.jpg;Eduardo Carrera
+SXM254;1022378960;HYUNDAI;2012;lobena.jpg;johnc.jpg;John Cendales
+WEP303;19304236;HYUNDAI;2014;cootrasdorado.png;celmira.png;Celmira Aponte
+TFU603;79049286;KIA;2012;aritur.jpg;pabloe.jpg;Pablo Emilio Ariza
+TTO791;79453261;HYUNDAI;2014;cootrasdorado.png;celmira.png;Celmira Aponte
+SXM042;11251557;HYUNDAI;2014;cootrasdorado.png;celmira.png;Celmira Aponte
+SQW000;1022378961;HYUNDAI;2012;ceal.jpg;augusto.jpg;Cesar Agusto Lopez
+THX126;11185744;HYUNDAI;2012;logo_ort.png;firma_ort.png;Gonzalo Lopez
+VFB527;51670600;HYUNDAI;2010;integratur.jpg;NancyG.jpg;Nancy Gonzalez
+UPR300;28844562;HYUNDAI;2008;cootrasdorado.png;celmira.png;Celmira Aponte
+SXX683;14317850;HYUNDAI;2011;cootrasdorado.png;celmira.png;Celmira Aponte
+TAM333;52170878;HYUNDAI;2013;cootrasdorado.png;celmira.png;Celmira Aponte
+WCM793;79380741;HYUNDAI;2013;cootrasdorado.png;celmira.png;Celmira Aponte
+WCR203;19425025;JINBEI;2014;cootrasdorado.png;celmira.png;Celmira Aponte
+TAM786;53905598;HYUNDAI;2013;cootrasdorado.png;celmira.png;Celmira Aponte
+TTQ218;19385770;HYUNDAI;2013;cootrasdorado.png;celmira.png;Celmira Aponte
+WEX321;19425025;JIMBEI;2014;cootrasdorado.png;celmira.png;Celmira Aponte
+UFX981;19228386;HYUNDAI;2013;integratur.jpg;NancyG.jpg;Nancy Gonzalez
+WEP452;52102776;HYUNDAI;2014;cootrasdorado.png;celmira.png;Celmira Aponte
+SXZ700;19425745;VOLSWAGEN;2013;cootrasdorado.png;celmira.png;Celmira Aponte
+WEP537;20476256;HYUNDAI;2014;cootrasdorado.png;celmira.png;Celmira Aponte
+TTY842;79909969;NISSAN;2014;cundinatrans.jpg;jarbey.jpg;Jarbey Adolfo Rodriguez
+WER533;20476256;JIMBEI;2014;cootrasdorado.png;celmira.png;Celmira Aponte
+WEU889;19397729;HYUNDAI;2013;aritur.jpg;pabloe.jpg;Pablo Emilio Ariza
+SZT712;35326338;HYUNDAI;2012;aeroexpresos.jpg;jaimemunar.jpg;Jaime Munar
+WEP546;80025151;HYUNDAI;2014;cootrasdorado.png;celmira.png;Celmira Aponte
+UFX265;19238420;HYUNDAI;2011;vanns.jpg;MonicaM.jpg;Monica Mariuet
+WER530;80176743;KIA;2014;metro.jpg;edgarbarrero.jpg;Edgar Barrero
+TFR333;2953988;HYUNDAI;2013;cootrasdorado.png;celmira.png;Celmira Aponte
+TLO028;79554950;HYUNDAI;2013;cootrasdorado.png;celmira.png;Celmira Aponte

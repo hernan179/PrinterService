@@ -1,0 +1,71 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.rta.aeropuerto.facade;
+
+import com.rta.aeropuerto.domain.*;
+import java.util.Date;
+import java.util.List;
+import javax.ejb.Remote;
+
+/**
+ *
+ * @author hsancheza
+ */
+@Remote
+public interface AdminTurnosServiceRemote {
+
+    public Poligonos getPoligono(Integer id);
+
+    public Boolean containsPoint(double latitud, double longitud, Sitios sitio);
+
+    public boolean login(Integer movil, long identificaion, LogMovileAero lma, String ip) throws Exception;
+
+    public List<Sitios> turnosXSitio(Integer sitio);
+
+    public List<Turnos> listTurnosById(Sitios sitios, Sitios sitios2, Turnos turno);
+
+    public Asignaciones verificarMovil(Integer codigo, Integer codCiudades, Integer estado) throws Exception;
+
+    public Sitios turnoPK(int pasarACalle);
+
+    public Turnos turnoAsignacionServicio(Sitios sitios, Integer turno);
+    public boolean levantarSancion(Integer unidad);
+
+    public boolean administrarSitios(String... args);
+    
+    public Identi identiByCedula(Long cedula, String placauto);
+
+    public Servicios crearServicio(Servicios servicio, boolean aceptarServicio, LogMovileAero lma) throws Exception;
+
+    public boolean enviarDatosRadioloc(String ip, String trama);
+
+    public Asignaciones actualziar(Integer valNummovil, Integer ciuddad, String ip, LogMovileAero lma) throws Exception;
+
+    public boolean logout(Integer movil) throws Exception;
+
+    public Sitios sitioById(int id);
+
+    public void insertLogUbicacion(Integer movil, String la, String lo, String ip,LogMovil lma);
+
+    public Turnos desenturnarMovil(Integer valNummovil, Integer codCiudades, Integer estado, int logout, LogMovileAero lma) throws Exception;
+
+    public Turnos enturnarMovil(Integer movile, Integer ciudad, Integer estado, String latitud, String longitud, LogMovileAero lma) throws Exception;
+
+    public void registrarLogMovilAero(Integer valNummovil, Integer codCiudades, Integer estado, Integer logout, LogMovileAero log) throws Exception;
+
+    public Turnos _ORGANIZAR_TURNOS(Sitios sitio, Turnos TURNO_POR_SALIR, Servicios servicios, int logout);
+
+    public Asignaciones vehiculoXTurno(Integer sitio);
+
+    public TarifasAero tariasById(Integer id);
+
+    public CajerosAero loginUser(CajerosAero usuario, Integer id);
+
+    public void enviarMensajeMovil(Integer movil, String msj);
+
+    public List<Sitios> todosSitios();
+
+    public List<Turnos> reorganizarTurnos(List<Turnos> turnos);
+}

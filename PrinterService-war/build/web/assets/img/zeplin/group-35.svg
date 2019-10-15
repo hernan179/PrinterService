@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="68px" height="67px" viewBox="0 0 68 67" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 41.2 (35397) - http://www.bohemiancoding.com/sketch -->
+    <title>DEF92764-C88C-45FB-9B87-339D8CD0048F</title>
+    <desc>Created with sketchtool.</desc>
+    <defs>
+        <circle id="path-1" cx="34.5" cy="31.5" r="22.5"></circle>
+        <filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="0.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.812340561   0 0 0 0 0.812340561   0 0 0 0 0.812340561  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="desktop-/-home" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="1-Desktop-Home" transform="translate(-200.000000, -3511.000000)">
+            <g id="eventos-de-ciudad" transform="translate(-124.000000, 3249.000000)">
+                <g id="Group-35" transform="translate(324.000000, 262.000000)">
+                    <g id="compas-icon">
+                        <g id="Oval">
+                            <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                        </g>
+                        <g id="Group-32" transform="translate(23.250000, 20.250000)" fill="#C41F46">
+                            <path d="M7.21133209,10.8776059 C7.21133209,12.9351165 7.63118186,14.484089 8.47017099,15.5251907 C9.30916012,16.5662924 10.5637366,17.0868432 12.23319,17.0868432 C15.5806216,17.0868432 17.2543375,15.0173199 17.2543375,10.8776059 C17.2543375,6.72988347 15.5898569,4.65568856 12.2601854,4.65568856 C10.590732,4.65568856 9.3318931,5.1789089 8.4836687,6.22401483 C7.63544429,7.26912076 7.21133209,8.82076271 7.21133209,10.8776059 M19.2171884,17.9050424 C17.5924906,19.5427754 15.2652015,20.3609746 12.23319,20.3609746 C9.20117845,20.3609746 6.87317898,19.5427754 5.24848114,17.9050424 C3.62449371,16.2679767 2.8125,13.916822 2.8125,10.8522458 C2.8125,7.78766949 3.62662493,5.4471928 5.2555852,3.83081568 C6.88383506,2.21443856 9.21893859,1.40625 12.2601854,1.40625 C15.3007218,1.40625 17.62659,2.22111229 19.2377902,3.84950212 C20.8482799,5.47922669 21.6531695,7.82170551 21.6531695,10.8776059 C21.6531695,13.9254979 20.8411758,16.2679767 19.2171884,17.9050424 Z" id="Fill-3"></path>
+                            <polygon id="Fill-14" points="20.8326471 0 -1.0658141e-14 20.1346398 2.55603971 22.4257309 23.3652434 2.31311441"></polygon>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

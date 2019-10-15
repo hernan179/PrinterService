@@ -1,0 +1,454 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.aero.aplication.main;
+
+
+import com.aero.aplication.dto.CajerosAero;
+import com.aero.aplication.dto.Servicios;
+import com.aero.aplication.dto.Ticket;
+import java.awt.Toolkit;
+import java.text.DecimalFormat;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import org.apache.log4j.Logger;
+
+/**
+ *
+ * @author hsancheza
+ */
+public class Test extends JPanel {
+
+
+    CajerosAero cajeros = new CajerosAero();
+    Servicios srv = new Servicios();
+    Ticket tiquete = new Ticket();
+    private static final Logger log = Logger.getLogger(AplicationAero.class);
+    DecimalFormat formateador = new DecimalFormat("###,###.##");
+
+    public Test() {
+        initComponents();
+     //   printerServicesRemote = (PrinterServicesDelegateRemote) new UtilContest().jndi(printerServicesRemote, "PrinterServicesDelegate", "remote");
+
+    }
+
+    public CajerosAero leerCajero(CajerosAero ca, Ticket tk, Servicios srv) {
+        this.cajeros = ca;
+        this.tiquete = tk;
+        this.srv = srv;
+
+        jtfValor.setText(tk.getValor());
+        jtaDireccion.setText(tk.getDestino());
+        return cajeros;
+    }
+
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jtfValor = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jtfEfectivo = new javax.swing.JTextField();
+        jtfDebito = new javax.swing.JTextField();
+        jtfCredito = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jtfDarVueltas = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jtaDireccion = new javax.swing.JTextArea();
+        jSeparator2 = new javax.swing.JSeparator();
+        jLabel8 = new javax.swing.JLabel();
+        jtfDolarHoy = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        jtfDolarPesos = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jtfCantidadDolar = new javax.swing.JTextField();
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel1.setText("Valor");
+
+        jtfValor.setEditable(false);
+
+        jLabel2.setText("Forma de Pago");
+
+        jtfEfectivo.setText("0");
+        jtfEfectivo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jtfEfectivoKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jtfEfectivoKeyTyped(evt);
+            }
+        });
+
+        jtfDebito.setText("0");
+        jtfDebito.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jtfDebitoKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jtfDebitoKeyTyped(evt);
+            }
+        });
+
+        jtfCredito.setText("0");
+        jtfCredito.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jtfCreditoKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jtfCreditoKeyTyped(evt);
+            }
+        });
+
+        jLabel3.setText("Efectivo");
+
+        jLabel4.setText("Debito");
+
+        jLabel5.setText("Credito");
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel6.setText("Cambio $");
+        jLabel6.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+
+        jtfDarVueltas.setEditable(false);
+        jtfDarVueltas.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        jButton1.setText("Generar Factura y imprimir");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Cancelar");
+
+        jtaDireccion.setEditable(false);
+        jtaDireccion.setColumns(20);
+        jtaDireccion.setRows(5);
+        jScrollPane1.setViewportView(jtaDireccion);
+
+        jLabel8.setText("Dolar hoy");
+
+        jtfDolarHoy.setText("0");
+        jtfDolarHoy.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jtfDolarHoyKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jtfDolarHoyKeyTyped(evt);
+            }
+        });
+
+        jLabel9.setText("Cantidad");
+
+        jtfDolarPesos.setEditable(false);
+        jtfDolarPesos.setText("0");
+
+        jLabel10.setText("Pesos");
+
+        jtfCantidadDolar.setText("0");
+        jtfCantidadDolar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jtfCantidadDolarKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jtfCantidadDolarKeyTyped(evt);
+            }
+        });
+
+        
+        
+
+       
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+
+        Object obj[] = null;
+        int response = JOptionPane.showConfirmDialog(null, "\nValor: " + tiquete.getValor(), "ESTA SEGURO DE GENERAR FACTURA ?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        if (response == JOptionPane.NO_OPTION) {
+        } else if (response == JOptionPane.YES_OPTION) {
+
+            Integer efectivoCliente = new Integer(jtfEfectivo.getText());
+            Integer debitoCliente = new Integer(jtfDebito.getText());
+            Integer creditoCliente = new Integer(jtfCredito.getText());
+
+            Integer dineroCliente = efectivoCliente + debitoCliente + creditoCliente;
+
+            if (dineroCliente < new Integer(tiquete.getValor())) {
+                JOptionPane.showMessageDialog(null, "No hay suficiente dinero para crear el servicio");
+            } else {
+                try {
+                    srv = printerServicesRemote.crearServicio(srv);
+                    System.out.println("serv:   " + srv);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (srv == null || srv.getId() == null) {
+                    JOptionPane.showMessageDialog(null, "No hay respuesta desde el servidor para crear servicios, Intentelo nuevamente");
+                    //return null;
+                } else {
+                    byte[] bytes = null;
+                    log.info("START => REIMPRESION ULT FACTURA : " + srv.getNumero());
+                    tiquete.setId(new Long(srv.getNumero()));
+                    try {
+                        bytes = new AplicationAero().testPrinter(tiquete,false);
+                        PrintPdf printPDFFile = new PrintPdf(bytes, "Test Print PDF");
+                        printPDFFile.print();
+                        log.info("END => REIMPRESION ULT FACTURA : " + srv.getNumero());
+                    } catch (Exception e) {
+                        String msj = "";
+                        msj += "Valor      : $" + srv.getValor();
+                        msj += "\nDestino  : " + srv.getAddres();
+                        msj += "\nVehiculo : " + srv.getAutoPlaca();
+                        msj += "\nNo. Fact : " + srv.getNumero();
+                        JOptionPane.showMessageDialog(null, msj + " Reintentar impresion...");
+                        try {
+                            log.info("START => FAIL THE REIMPRESION ULT FACTURA : " + srv.getNumero());
+
+                            bytes = new AplicationAero().testPrinter(tiquete,false);
+                            PrintPdf printPDFFile = new PrintPdf(bytes, "Test Print PDF");
+                            printPDFFile.print();
+                            log.info("END => REIMPRESION ULT FACTURA : " + srv.getNumero());
+                        } catch (Exception ee) {
+                            JOptionPane.showMessageDialog(null, "Servico creado, pero tenemos un inconveniente al imprimirlo,\nRevisar cola de impresion\nposiblemente la impresora no este disponible");
+                        }
+
+                    }
+                }
+
+                AplicationAero page = new AplicationAero();
+                page.setExtendedState(page.MAXIMIZED_BOTH);
+                page.leerUsuario(cajeros, cajeros.getClave(),new Sitios());
+                page.setVisible(true);
+                page.setLocationRelativeTo(null);
+                this.setVisible(false);
+
+                //codigo para cerrar la ventana
+
+               // this.dispose();
+               
+
+                System.out.println("cerrando la ventana....2");
+            }
+        } else if (response == JOptionPane.CLOSED_OPTION) {
+            System.out.println("JOptionPane closed");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jtfEfectivoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfEfectivoKeyReleased
+        // TODO add your handling code here:
+        try {
+            Integer efectivo = null;
+            Integer valorViaje = new Integer(tiquete.getValor());
+            if (jtfEfectivo.getText() != null && !jtfEfectivo.getText().isEmpty()) {
+                if (jtfEfectivo.getText().length() > 7) {
+                    jtfEfectivo.setText("0");
+                }
+                efectivo = new Integer(jtfEfectivo.getText());
+            } else {
+                efectivo = new Integer("0");
+            }
+            Integer DAR_CAMBIO = efectivo - valorViaje;
+            if (DAR_CAMBIO < 0) {
+                DAR_CAMBIO = 0;
+            }
+
+
+            jtfDarVueltas.setText(formateador.format(DAR_CAMBIO));
+            jtfDebito.setText("" + 0);
+            jtfCredito.setText("" + 0);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }//GEN-LAST:event_jtfEfectivoKeyReleased
+
+    private void jtfDebitoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfDebitoKeyReleased
+        // TODO add your handling code here:
+        try {
+            Integer debito = null;
+            Integer valorViaje = new Integer(tiquete.getValor());
+            if (jtfDebito.getText() != null && !jtfDebito.getText().isEmpty()) {
+                if (jtfDebito.getText().length() > 7) {
+                    jtfDebito.setText("0");
+                }
+                debito = new Integer(jtfDebito.getText());
+
+            } else {
+                debito = new Integer("0");
+            }
+
+            if (debito > valorViaje) {
+                jtfDebito.setText("" + valorViaje);
+                debito = new Integer(jtfDebito.getText());
+            }
+
+            Integer EFECTIVO = valorViaje - debito;
+
+            jtfEfectivo.setText(formateador.format(EFECTIVO));
+            jtfCredito.setText("" + 0);
+            jtfDarVueltas.setText("" + 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }//GEN-LAST:event_jtfDebitoKeyReleased
+
+    private void jtfCreditoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfCreditoKeyReleased
+        // TODO add your handling code here:
+
+
+        try {
+            Integer debito = null;
+            Integer valorViaje = new Integer(tiquete.getValor());
+            if (jtfCredito.getText() != null && !jtfCredito.getText().isEmpty()) {
+                if (jtfCredito.getText().length() > 7) {
+                    jtfCredito.setText("0");
+                }
+                debito = new Integer(jtfCredito.getText());
+
+            } else {
+                debito = new Integer("0");
+            }
+
+            if (debito > valorViaje) {
+                jtfCredito.setText("" + valorViaje);
+                debito = new Integer(jtfCredito.getText());
+            }
+            Integer EFECTIVO = valorViaje - debito;
+            jtfEfectivo.setText(formateador.format(EFECTIVO));
+            jtfDebito.setText("" + 0);
+            jtfDarVueltas.setText("" + 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }//GEN-LAST:event_jtfCreditoKeyReleased
+
+    private void jtfEfectivoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfEfectivoKeyTyped
+        // TODO add your handling code here:
+        if (!Character.isDigit(evt.getKeyChar()) && !Character.isISOControl(evt.getKeyChar())) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jtfEfectivoKeyTyped
+
+    private void jtfDebitoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfDebitoKeyTyped
+        // TODO add your handling code here:
+        if (!Character.isDigit(evt.getKeyChar()) && !Character.isISOControl(evt.getKeyChar())) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jtfDebitoKeyTyped
+
+    private void jtfCreditoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfCreditoKeyTyped
+        // TODO add your handling code here:
+        if (!Character.isDigit(evt.getKeyChar()) && !Character.isISOControl(evt.getKeyChar())) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+        }
+    }//GEN-LAST:event_jtfCreditoKeyTyped
+
+    private void dolarPesos() {
+        try {
+            Integer dolarHoy = new Integer("0");
+
+            Integer cantidadDolar = new Integer("0");
+
+
+            if (jtfDolarHoy.getText().length() > 7) {
+                jtfDolarHoy.setText("0");
+            }
+            if (jtfCantidadDolar.getText().length() > 5) {
+                jtfCantidadDolar.setText("0");
+            }
+
+
+            if (jtfDolarHoy != null && !jtfDolarHoy.getText().isEmpty()) {
+                dolarHoy = new Integer(jtfDolarHoy.getText());
+            }
+
+            if (jtfCantidadDolar != null && !jtfCantidadDolar.getText().isEmpty()) {
+                cantidadDolar = new Integer(jtfCantidadDolar.getText());
+            }
+
+            Long lDolarPesos = (long) dolarHoy * cantidadDolar;
+            System.out.println("valor dolar:  " + lDolarPesos);
+            jtfDolarPesos.setText(formateador.format(lDolarPesos));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void jtfDolarHoyKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfDolarHoyKeyTyped
+        // TODO add your handling code here:
+        if (!Character.isDigit(evt.getKeyChar()) && !Character.isISOControl(evt.getKeyChar())) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+        }
+
+    }//GEN-LAST:event_jtfDolarHoyKeyTyped
+
+    private void jtfCantidadDolarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfCantidadDolarKeyTyped
+        // TODO add your handling code here:
+        if (!Character.isDigit(evt.getKeyChar()) && !Character.isISOControl(evt.getKeyChar())) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+        }
+
+    }//GEN-LAST:event_jtfCantidadDolarKeyTyped
+
+    private void jtfDolarHoyKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfDolarHoyKeyReleased
+        // TODO add your handling code here:
+        dolarPesos();
+    }//GEN-LAST:event_jtfDolarHoyKeyReleased
+
+    private void jtfCantidadDolarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtfCantidadDolarKeyReleased
+        // TODO add your handling code here:
+        dolarPesos();
+    }//GEN-LAST:event_jtfCantidadDolarKeyReleased
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JTextArea jtaDireccion;
+    private javax.swing.JTextField jtfCantidadDolar;
+    private javax.swing.JTextField jtfCredito;
+    private javax.swing.JTextField jtfDarVueltas;
+    private javax.swing.JTextField jtfDebito;
+    private javax.swing.JTextField jtfDolarHoy;
+    private javax.swing.JTextField jtfDolarPesos;
+    private javax.swing.JTextField jtfEfectivo;
+    private javax.swing.JTextField jtfValor;
+    // End of variables declaration//GEN-END:variables
+}

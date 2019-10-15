@@ -1,0 +1,1036 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.rta.aeropuerto.facade;
+
+import com.rta.aeropuerto.domain.*;
+import com.rta.aeropuerto.utilitarios.*;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
+import java.util.*;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import org.apache.log4j.Logger;
+
+/**
+ *
+ * @author hsancheza
+ */
+@Stateless
+public class AdminTurnosServices implements AdminTurnosServiceRemote {
+
+    @PersistenceContext(unitName = "EE-ejbPU")
+    private EntityManager em;
+    static Logger log = Logger.getLogger(AdminTurnosServices.class);
+    private final int PUERTO_ENVIAR_DATOS = 10003;
+    private final String IP_SERVIDORGPRS = "servidorgprs.losunos.net";
+    private HashMap<Integer, Polygon> vertices = new HashMap<Integer, Polygon>();
+    private HashMap<Integer, String> nombres = new HashMap<Integer, String>();
+    boolean poligonoOK = false;
+
+    /*
+     * @EJB TurnoActivationService turnoService; @EJB PoligonosActSrvRemote
+     * poligonoSrv;
+     */
+    public Servicios crearServicio(Servicios servicio, boolean aceptarServicio, LogMovileAero lma) throws Exception {
+        try {
+            Sitios sitio = sitioById(servicio.getUsuarios().getSitios().getId());
+            
+           Turnos TURNO_SALIENTE = turnoAsignacionServicio(sitio,1);
+           Asignaciones nv = TURNO_SALIENTE.getAsignaciones();
+             if (TURNO_SALIENTE != null) {
+                servicio.setAsignaciones(TURNO_SALIENTE.getAsignaciones());
+                servicio.setAutoPlaca(TURNO_SALIENTE.getAsignaciones().getAutoPlaca());
+                servicio.setNit(TURNO_SALIENTE.getAsignaciones().getNit());
+                try {
+                    em.persist(servicio);
+                    _ORGANIZAR_TURNOS(sitio, TURNO_SALIENTE, servicio, 1);
+                    return servicio;
+                } catch (RuntimeException e) {
+                    e.printStackTrace();
+                }
+            }
+            return servicio;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Turnos _ORGANIZAR_TURNOS(Sitios sitio, Turnos TURNO_POR_SALIR, Servicios servicios, int logout) {
+        int _i = sitio.getId();
+        int tur = TURNO_POR_SALIR.getTurno();
+        int[] recorrerTurnos = new int[_i];
+
+        List<Turnos> listTurnos = new ArrayList<Turnos>();
+
+        Turnos TURNO_SALIENTE = TURNO_POR_SALIR;
+
+        listTurnos = listTurnosById(TURNO_SALIENTE.getSitios(), sitioById(4), TURNO_SALIENTE);
+
+        List<Turnos> listTurnosANotificar = new ArrayList<Turnos>();
+
+        Set<Sitios> mySitios = new HashSet<Sitios>();
+        for (Turnos t : listTurnos) {
+
+            log.info("=>    ");
+            String mesaje = "";
+            mesaje += (" ID : " + t.getId());
+            mesaje += (" Turno: # " + t.getTurno());
+            mesaje += (" EN : " + t.getSitios().getNombre());
+            mesaje += (" Stock: " + t.getSitios().getStock());
+            mesaje += (" Exis: " + t.getSitios().getExistencias() + "\n");
+            log.info(mesaje);
+            if (t.getSitios().getId().equals(TURNO_SALIENTE.getSitios().getId())) {
+                if (t.getTurno() >= TURNO_SALIENTE.getTurno()) {
+                    listTurnosANotificar.add(t);
+                }
+            } else {
+                if (t.getSitios().getId() >= TURNO_SALIENTE.getSitios().getId()) {
+                    listTurnosANotificar.add(t);
+                }
+            }
+        }
+
+
+        log.info("FIND");
+        for (Turnos t : listTurnosANotificar) {
+            String mesaje = "";
+            mesaje += (" ID : " + t.getId());
+            mesaje += (" Turno: # " + t.getTurno());
+            mesaje += (" EN : " + t.getSitios().getNombre());
+            mesaje += (" Stock: " + t.getSitios().getStock());
+            mesaje += (" Exis: " + t.getSitios().getExistencias() + "\n");
+            log.info(mesaje);
+        }
+        log.info("=====================hsa =====================================");
+
+        //TreeSet<Turnos> tSetTurnos = getMisTurnosAscendentes(listTurnosANotificar);
+
+
+        TreeSet<Sitios> tSetSitios = new Herramientas().getMisSitiosAscendentes(listTurnosANotificar);
+
+        int aux = 0;
+        int _lastExistSite[][] = new int[1][2];
+        for (Sitios s : tSetSitios.descendingSet()) {
+            if (aux + 1 == tSetSitios.size()) {
+                _lastExistSite[0][0] = s.getId();// sitio
+                _lastExistSite[0][1] = s.getExistencias() - 1 >= 0 ? s.getExistencias() - 1 : 0;
+                log.info("ultimo sitio recorrido " + s.getNombre());
+            } else {
+                log.info(s.getId() + "   Sitios: " + s.getNombre());
+            }
+            aux++;
+        }
+
+        //  1. INTERNACIONAL
+        //  2. NACIONAL
+        //  3. NUEVO MUELLE
+        //  4. PARQUEO
+        //  5. CALLE
+
+
+        log.info("=============================================");
+
+        int i = 0;
+        boolean restarTurno = true;
+        log.info("===========================================");
+        for (Turnos t : listTurnosANotificar) {
+
+            String mesaje = "ANTES:  ";
+
+            mesaje += (" ID : " + t.getId());
+            mesaje += (" Turno: # " + t.getTurno());
+            mesaje += (" EN : " + t.getSitios().getNombre());
+            mesaje += (" Stock: " + t.getSitios().getStock());
+            mesaje += (" Exis: " + t.getSitios().getExistencias() + "\n");
+            log.info(mesaje);
+            if (i == 0) {
+                //   log.info("sale: " + TURNO_SALIENTE.getTurno() + " " + TURNO_SALIENTE.getSitios().getNombre());
+            }
+            if (t.getSitios().getId().equals(TURNO_SALIENTE.getSitios().getId()) && t.getTurno().equals(TURNO_SALIENTE.getSitios().getExistencias())) {
+                if (t.getTurno().equals(1)) {
+                    log.info(" -  (1) primero y ultimo y salgo");
+                    restarTurno = false;
+                    t.setTurno(0);
+                    t.setSitios(turnoPK(5));
+                } else {
+
+                    if (t.getTurno().equals(TURNO_SALIENTE.getTurno()) && t.getSitios().getId().equals(TURNO_SALIENTE.getSitios().getId())) {
+                        log.info(" -   (2) soy el ultimo y salgo ");
+                        t.setTurno(0);
+                        t.setSitios(turnoPK(5));
+                    } else {
+                        if (t.getSitios().getId().equals(TURNO_SALIENTE.getSitios().getId())) {
+                            log.info(" -  (3) soy el ultimo y no salgo, no mover de lugar ");
+                            t.setTurno(t.getTurno() - 1 > 0 ? t.getTurno() - 1 : 0);
+                        } else {
+                            log.info(" -   (4) soy el ultimo y no salgo, mover de lugar ");
+                            t.setTurno(TURNO_SALIENTE.getTurno());
+                            t.setSitios(sitioById(t.getSitios().getId() - 1));
+                        }
+                    }
+                }
+            } else {
+                if (t.getTurno().equals(t.getSitios().getExistencias())) {
+
+                    if (t.getSitios().getId().equals(TURNO_SALIENTE.getSitios().getId())) {
+                        log.info(" - (5) soy el primero-ultimos y salgo");
+                        t.setTurno(0);
+                        t.setSitios(turnoPK(5));
+                    } else {
+                        if (t.getTurno().equals(1)) {
+                            if (t.getSitios().getId().equals(TURNO_SALIENTE.getSitios().getId())) {
+                                log.info(" - (6) soy el primero-ultimos y no salgo, no mover");
+                                restarTurno = false;
+                            } else {
+                                log.info(" - (7) soy el primero-ultimos y no salgo");
+                                log.info(t.getSitios().getNombre());
+                                t.setSitios(sitioById(t.getSitios().getId() - 1));
+
+                                t.setTurno(t.getSitios().getExistencias());
+                            }
+                        } else {
+                            if (t.getSitios().getId().equals(TURNO_SALIENTE.getSitios().getId())) {
+                                if (t.getSitios().getId().equals(TURNO_SALIENTE.getSitios().getId())) {
+                                    log.info(" - (8)soy el ultimos y no salgo, no mover");
+                                    t.setTurno(t.getTurno() - 1 > 0 ? t.getTurno() - 1 : 0);
+                                } else {
+                                    log.info(" - (9)soy el ultimos y no salgo");
+                                    t.setTurno(TURNO_SALIENTE.getTurno());
+                                    t.setSitios(sitioById(t.getSitios().getId() - 1));
+                                }
+                            } else {
+                                if (t.getSitios().getId().equals(4)) {
+                                    if (t.getTurno().equals(1)) {
+                                        log.info(" - (10) soy el ultimo de la fila, mover de lugar");
+                                        t.setSitios(sitioById(t.getSitios().getId() - 1));
+                                        t.setTurno(t.getSitios().getExistencias());
+
+                                    } else {
+                                        log.info(" - (10) soy el ultimo de la fila, no. mover de lugar");
+                                        t.setTurno(t.getTurno() - 1 > 0 ? t.getTurno() - 1 : 0);
+                                    }
+
+                                } else {
+                                    log.info(" - (11) soy el ultimo de la fila, mover de lugar");
+                                    t.setSitios(sitioById(t.getSitios().getId() - 1));
+                                    t.setTurno(t.getSitios().getExistencias());
+                                }
+                            }
+                        }
+                    }
+                } else {
+
+                    if (t.getTurno().equals(1) && t.getSitios().getId().equals(TURNO_SALIENTE.getSitios().getId())) {
+                        log.info(" - (12) soy el primero y salgo ");
+                        t.setTurno(0);
+                        t.setSitios(turnoPK(5));
+                        restarTurno = true;
+                    } else {
+                        if (t.getSitios().getId().equals(TURNO_SALIENTE.getSitios().getId()) && t.getTurno().equals(TURNO_SALIENTE.getTurno())) {
+                            log.info(" - (13) estoy en medio y salgo");
+                            t.setTurno(0);
+                            t.setSitios(turnoPK(5));
+                        } else {
+                            if (t.getTurno().equals(1)) {
+                                if (t.getSitios().getId().equals(TURNO_SALIENTE.getSitios().getId())) {
+                                    log.info(" - (14) estoy el primero y no salgo, no mover");
+                                    restarTurno = false;
+                                } else {
+                                    if (t.getSitios().getId().equals(4)) {
+                                        log.info(" - (15) ESTOY DE PRIMERO EN PARQUEADERO, MOVERME DE SITIO");
+                                        t.setSitios(sitioById(t.getSitios().getId() - 1));
+                                        t.setTurno(t.getSitios().getExistencias());
+                                    } else {
+                                        log.info(" - (16) estoy el primero y no salgo");
+                                        //t.setTurno(TURNO_SALIENTE.getTurno());
+                                        //t.setSitios(turnoService.sitioById(t.getSitios().getId()));
+                                        restarTurno = false;
+                                    }
+                                }
+                            } else {
+                                if (t.getSitios().getId().equals(TURNO_SALIENTE.getSitios().getId())) {
+                                    if (restarTurno) {
+                                        log.info(" - (17) estoy en medio y no salgo y restar turno");
+                                        t.setTurno(t.getTurno() - 1 > 0 ? t.getTurno() - 1 : 0);
+                                    } else {
+                                        log.info(" - (18) estoy en medio y no salgo y no  restar turno");
+                                    }
+                                } else {
+                                    if (restarTurno) {
+                                        log.info(" - (19) estoy en medio y no salgo y restar turno");
+                                        t.setTurno(t.getTurno() - 1 > 0 ? t.getTurno() - 1 : 0);
+                                    } else {
+                                        if (t.getSitios().getId().equals(4)) {
+                                            log.info(" - (20) estoy en medio y no salgo y restar turno");
+                                            t.setTurno(t.getTurno() - 1 > 0 ? t.getTurno() - 1 : 0);
+                                        } else {
+                                            log.info(" - (21) estoy en medio y no salgo y no  restar turno");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            i++;
+        }
+
+
+
+
+        log.info("===============  FINAL  ============================");
+        for (Turnos t : listTurnosANotificar) {
+
+            String mesaje = "DESPUES: ";
+
+            mesaje += (" ID : " + t.getId());
+            mesaje += (" Turno: # " + t.getTurno());
+            mesaje += (" EN : " + t.getSitios().getNombre());
+            mesaje += (" Stock: " + t.getSitios().getStock());
+            mesaje += (" Exis: " + t.getSitios().getExistencias() + "\n");
+            log.info(mesaje);
+
+
+            if (t.getAsignaciones().getId().equals(TURNO_POR_SALIR.getAsignaciones().getId())) {
+                if (logout == 0) {
+                    Asignaciones myAsig = t.getAsignaciones();
+                    myAsig.setNit((long) 0);
+                    em.merge(myAsig);
+                }
+            }
+            em.merge(t);
+
+            // log.info("ID: "+t.getId()+"  TURNO # " + t.getTurno() + "  EN " + t.getSitios().getNombre());
+//            log.info("ID: " + t.getId() + "  TURNO # " + t.getTurno() + "  EN " + t.getSitios().getNombre());
+
+            String msg = "";
+            if (servicios != null && TURNO_SALIENTE.getId().equals(t.getId())) {
+                log.info("ENVIANDO SVR A LA UNIDAD... " + t.getAsignaciones().getIp() + " PLACA " + t.getAsignaciones().getAutoPlaca());
+                msg += "S|";
+                msg += servicios.getAddres() + "|1234|" + sitio.getNombre() + "|32|05";
+                log.info("SEND SERVICIO : " + msg);
+                enviarDatosRadioloc(t.getAsignaciones().getIp(), msg);
+            } else {
+                if (TURNO_SALIENTE.getId().equals(t.getId())) {
+                    log.info("CANCELANDO SERVICO: turno No " + TURNO_SALIENTE.getTurno() + "  EN " + t.getSitios().getNombre());
+                } else {
+                    msg += "T|TURNO No. " + t.getTurno() + " EN " + t.getSitios().getNombre() + " PLACA: " + t.getAsignaciones().getAutoPlaca();
+                    log.info("SEND MSJ : " + msg);
+                    enviarDatosRadioloc(t.getAsignaciones().getIp(), msg);
+                }
+            }
+        }
+        Sitios mySitioExistencias = sitioById(_lastExistSite[0][0]);
+        mySitioExistencias.setExistencias(_lastExistSite[0][1]);
+        em.merge(mySitioExistencias);
+
+        Sitios mySitiosCalle = sitioById(5);
+        mySitiosCalle.setExistencias(mySitiosCalle.getExistencias() + 1 <= mySitiosCalle.getStock() ? mySitiosCalle.getExistencias() + 1 : mySitiosCalle.getStock());
+        em.merge(mySitiosCalle);
+        return TURNO_SALIENTE;
+    }
+
+    @Override
+    public List<Turnos> listTurnosById(Sitios sitios, Sitios sitios2, Turnos turno) {
+        List<Turnos> listTurnos = null;
+        try {
+            Query q = em.createNamedQuery("Turnos.findBySitiosByOrder");//Sitios.findById
+            q.setParameter("sitios", sitios);
+            q.setParameter("sitios2", sitios2);
+            //q.setParameter("turno", turno.getTurno());
+            listTurnos = (List<Turnos>) q.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listTurnos;
+    }
+    
+     @Override
+    public Turnos turnoAsignacionServicio(Sitios sitios,Integer turno) {
+        Turnos listTurnos = null;
+        try {
+            Query q = em.createNamedQuery("Turnos.findByAsigner");//Sitios.findById
+            q.setParameter("sitios", sitios);
+            q.setParameter("turno", turno);
+            listTurnos = (Turnos) q.getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listTurnos;
+    }
+
+    public Sitios turnoPK(int pasarACalle) {
+        Query q3 = em.createNamedQuery("Sitios.findById");
+        q3.setParameter("id", pasarACalle);
+        List<Sitios> test = (List<Sitios>) q3.getResultList();
+        Sitios sit = null;
+        for (Sitios s : test) {
+            sit = s;
+        }
+        return sit;
+    }
+
+    public boolean enviarDatosRadioloc(String ip, String trama) {
+        try {
+            Socket sck = new Socket(IP_SERVIDORGPRS, PUERTO_ENVIAR_DATOS);
+            sck.setSoTimeout(1000);
+            BufferedWriter bufferSalida = new BufferedWriter(new OutputStreamWriter(sck.getOutputStream(), "LATIN1"));
+            //String tm = ip + "%" + "T|" + trama;
+            String tm = ip + "%" + trama;
+            bufferSalida.write(tm);
+            bufferSalida.flush();
+            bufferSalida.close();
+            sck.close();
+            return true;
+        } catch (Exception ex) {
+            log.info(ex.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public Sitios sitioById(int id) {
+
+        Sitios s = null;
+        try {
+            Query q3 = em.createNamedQuery("Sitios.findById");//Sitios.findById
+            q3.setParameter("id", id);
+            q3.setMaxResults(1);
+            s = (Sitios) q3.getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return s;
+    }
+
+    public List<Sitios> turnosXSitio(Integer sitio) {
+        log.info("looking up by sitio " + sitio);
+        Query q = em.createNamedQuery("Sitios.findById");//Sitios.findById
+        q.setParameter("id", sitio);
+        List<Sitios> listSitios = (List<Sitios>) q.getResultList();
+        log.info("EN TOTAL " + listSitios.size() + " en sitio :" + sitio);
+        log.info(listSitios.size());
+        return listSitios;
+    }
+
+    public Asignaciones vehiculoXTurno(Integer sitio) {
+        List<Sitios> test = turnosXSitio(sitio);
+        Collection<Turnos> turnosSet = null;
+        Asignaciones asig = null;
+        if (test != null) {
+            for (Sitios t : test) {
+                turnosSet = t.getTurnos();
+            }
+            TreeSet<Turnos> myTurnos = new EnturnamientoManagement().ordenTurnos(turnosSet);
+
+            int i = 0;
+            out:
+            for (Turnos t : myTurnos.descendingSet()) {
+                if (t.getEstado() == 1) {
+                    ++i;
+                    if (i == 1) {
+                        asig = t.getAsignaciones();
+                        break out;
+                    }
+                }
+            }
+        }
+        return asig;
+    }
+
+    @Override
+    public Asignaciones verificarMovil(Integer codigo, Integer codCiudades, Integer estado) throws Exception {
+
+        Asignaciones asig = null;
+        try {
+            System.out.println("buscando el movil por el codigo.. " + codigo);
+            System.out.println("Cuando efectuo el login...");
+            Query q3 = em.createNamedQuery("Asignaciones.findByCodigo");
+            q3.setParameter("codigo", codigo);
+            q3.setMaxResults(1);
+            asig = (Asignaciones) q3.getSingleResult();
+
+            //*   log.info(" in............by code : " + codigo);
+            //**   return (Asignaciones) em.createNamedQuery("Asignaciones.findByCodigo").setParameter("codigo", codigo).getSingleResult();
+        } catch (Exception e) {
+
+            return null;
+            //e.printStackTrace();
+            //  throw new Exception("No existe el movil");
+            //  return null;
+        }
+        System.out.println("se buscaron los dispositivos en la db de aeropuerto");
+        return asig;
+    }
+
+    @Override
+    public Asignaciones actualziar(Integer valNummovil, Integer codCiudades, String ip, LogMovileAero lma) throws Exception {
+        Asignaciones _movil = null;
+
+        try {
+            _movil = verificarMovil(valNummovil, codCiudades, null);
+        } catch (Exception e) {
+            log.info("MOVIL NO SE ENCUENTRA REGISTRADO EN EL SISTEMA");
+            e.printStackTrace();
+        }
+
+        if (_movil != null) {
+            _movil.setIp(ip);
+            em.merge(_movil);
+            log.info("REINICIO NORMAL");
+            lma.setDetalle("REINICIO NORMAL");
+            lma.setAsignaciones(_movil);
+            registrarLogMovilAero(lma);
+            return _movil;
+        } else {
+            //--log.info("SE TRATA DE UNA TABLETS NUEVA, BUSCANDO MOVIL EN EL SISTEMA DE INVENTARIO");
+            /*
+             * Movil movil = movilByNumero(valNummovil); Sitios sitios =
+             * sitioById(5); System.out.println("uoneneneneneenenne");
+             * System.out.println(sitios.getNombre());
+             * System.out.println("sinitio nuevo encotrado....");
+             *
+             * Asignaciones asig = new Asignaciones(); asig.setIp(ip);
+             * asig.setCiudad(codCiudades); asig.setEstadoId(1);
+             * asig.setPlaceId(0); asig.setDescripcion("TABLE NUEVA");
+             * asig.setActualizacion(new Date());
+             *
+             * asig.setAutoPlaca(movil.getPlaca());
+             * asig.setCodigo(movil.getNumero());
+             *
+             * Identi identi = movilByPlaca(movil.getPlaca());
+             * System.out.println("buscando el conductor del carro......");
+             * System.out.println("Nit : " + identi.getIdentiPK().getCedula());
+             *
+             * asig.setNit(identi.getIdentiPK().getCedula());
+             * asig.setConductor(identi.getNombre());
+             *
+             * Turnos turnos = new Turnos(); try { lma.setDetalle("Table
+             * nueva"); lma.setAsignaciones(_movil); em.persist(asig); log(lma);
+             *
+             * } catch (RuntimeException e) { e.printStackTrace(); }
+             * log.info("El nuevo id es: " + asig.getId());
+             * turnos.setAsignaciones(asig); turnos.setEstado(1);
+             * turnos.setTurno(0); turnos.setDetalle("REINICIO");
+             *
+             * sitios.setExistencias(sitios.getExistencias() + 1 <=
+             * sitios.getStock() ? sitios.getExistencias() + 1 :
+             * sitios.getExistencias()); turnos.setSitios(sitios);
+             * turnos.setFecha(new Date()); turnos.setId(asig.getId());
+             * turnos.setAsignaciones(asig);
+             *
+             * em.persist(turnos); em.merge(sitios); em.merge(asig);
+             *
+             * log.info("TABLE REGISTRADA CON EXITO");
+             * log.info(turnos.getAsignaciones().getAutoPlaca());
+             * log.info(turnos.getAsignaciones().getCodigo());
+             * log.info(turnos.getAsignaciones().getIp());
+             */
+
+            return null;
+        }
+    }
+
+    public boolean login(Integer movil, long identificaion, LogMovileAero lma, String ip) throws Exception {
+
+        Asignaciones asig = verificarMovil(movil, 11005, null);
+        lma.setDetalle("LOGIN");
+        lma.setComando("I");
+        lma.setAsignaciones(asig);
+
+
+        log.info("La unidad envio un login desde ");
+        log.info("Sitio: " + asig.getTurnos().iterator().next().getSitios());
+        log.info("Turno: " + asig.getTurnos().iterator().next().getTurno());
+        if (asig != null) {
+            if (asig.getNit().equals((Long) identificaion)) {
+                log.info("es el mismo conductor del turno anterior");
+                asig.setActualizacion(new Date());
+                asig.setIp(ip);
+                lma.setAsignaciones(asig);
+                em.merge(asig);
+                registrarLogMovilAero(lma);
+
+                if (!asig.getTurnos().iterator().next().getSitios().getId().equals(5)) {
+                    _ORGANIZAR_TURNOS(asig.getTurnos().iterator().next().getSitios(), asig.getTurnos().iterator().next(), null, 1);
+                }
+
+                return true;
+            } else {
+                //Asignaciones asi = asignacionesByNit(identificaion);
+                log.info("buscando por " + identificaion + "," + asig.getAutoPlaca());
+                try {
+                    
+                      Identi _identi = identiByCedula(identificaion,
+                      asig.getAutoPlaca()); log.info("CEDULA ANT " +
+                      asig.getNit()); log.info("CEDULA NEW " +
+                      _identi.getCedula());
+                      asig.setActualizacion(new Date());
+                      asig.setNit(_identi.getCedula());
+                      asig.setConductor(_identi.getNombre());
+                      lma.setAsignaciones(asig); 
+                      registrarLogMovilAero(lma); 
+                      em.merge(asig);
+                      log.info(asig.getNit());
+                     
+                    return true;
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+        } else {
+            log.info("la table no se encuentra registrada...");
+            //** Movil numero = movilByNumero(movil);
+            log.info("movil sin incluir en el sisteam de enturnado");
+
+            return false;
+        }
+
+
+
+    }
+    
+        public Identi identiByCedula(Long cedula, String placauto) {
+        try {
+            Query q3 = em.createNamedQuery("Identi.findByCedulaByCC");
+            q3.setParameter("cedula", cedula);
+            q3.setParameter("placauto", placauto);
+            q3.setMaxResults(1);
+            Identi asi = (Identi) q3.getSingleResult();
+            return asi;
+        } catch (Exception e) {
+            //e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean logout(Integer movil) throws Exception {
+        Asignaciones asig = verificarMovil(movil, 11005, null);
+        LogMovileAero lma = new LogMovileAero();
+        lma.setDetalle("LOGIN");
+        lma.setComando("L");
+        lma.setAsignaciones(asig);
+        return true;
+    }
+
+    public void insertLogUbicacion(Integer gps, String la, String lo, String ip, LogMovil lma) {
+        try {
+            String latitud = la.substring(0, la.length() - 1);
+            String longitud = lo.substring(0, lo.length() - 1);
+
+
+            Double lati = new CardinalConverter().transformarCoordenadasDecimal(new Double(latitud));
+            Double lon = new CardinalConverter().transformarCoordenadasDecimal(new Double(longitud));
+            Asignaciones asig = verificarMovil(gps, 11005, null);
+            asig.setIp(ip);
+            lma.setAsignaciones(asig);
+            lma.setLatitud("" + lati);
+            lma.setLongitud("-" + lon);
+            em.merge(asig);
+            em.persist(lma);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+        }
+    }
+
+    public boolean levantarSancion(Integer unidad) {
+
+        boolean isOk = false;
+        List<Asignaciones> test = null;
+        if (unidad == null) {
+            Query q3 = em.createNamedQuery("Asignaciones.findAll");
+            test = (List<Asignaciones>) q3.getResultList();
+            isOk = true;
+        } else {
+            Query q3 = em.createNamedQuery("Asignaciones.findById");
+            q3.setParameter("id", unidad);
+            test = (List<Asignaciones>) q3.getSingleResult();
+            isOk = true;
+        }
+        log.info("Desbloqueando las unidades.....");
+        for (Asignaciones m : test) {
+            log.info("==>  " + m.getId() + " " + "|O" + " ip:" + m.getIp());
+            // new FuncionesRadiolocalizador().enviarDatosRadioloc(m.getIp(), "O|");
+            enviarDatosRadioloc(m.getIp(), "M|V3000");
+        }
+        return isOk;
+    }
+
+    public Turnos desenturnarMovil(Integer valNummovil, Integer codCiudades, Integer estado, int logout, LogMovileAero lma) throws Exception {
+        Asignaciones asig = verificarMovil(valNummovil, codCiudades, null);
+        Turnos turnos = null;
+        lma.setAsignaciones(asig);
+
+        registrarLogMovilAero(lma);
+
+        Turnos miTurno = null;
+        if (asig.getTurnos().iterator().next().getSitios().getId().equals(5)) {
+            log.info("EL VEHICULO NO TIENE TURNOS");
+            turnos = asig.getTurnos().iterator().next();
+            turnos.setTurno(0);
+            if (logout == 0) {
+                asig.setNit((long) 0);
+            }
+            Sitios sitioCalle = turnoPK(5);
+            em.merge(asig);
+            em.merge(sitioCalle);
+            return turnos;
+        } else {
+            miTurno = _ORGANIZAR_TURNOS(asig.getTurnos().iterator().next().getSitios(), asig.getTurnos().iterator().next(), null, logout);
+            return (miTurno);
+        }
+    }
+
+    public Turnos enturnarMovil(Integer movile, Integer ciudad, Integer estado, String latitud, String longitud, LogMovileAero lma) throws Exception {
+        //  1. INTERNACIONAL
+        //  2. NACIONAL
+        //  3. NUEVO MUELLE
+        //  4. PARQUEO
+        // 5. CALLE
+
+        Object[] returno = new Object[3];
+        Asignaciones asignacion = verificarMovil(movile, ciudad, null);
+
+        Turnos _turno = null;
+
+        latitud = latitud.substring(0, latitud.length() - 1);
+        longitud = longitud.substring(0, longitud.length() - 1);
+        Boolean ok = containsPoint(new Double(latitud), new Double(longitud), asignacion.getTurnos().iterator().next().getSitios());
+        log.info("SEGUN LAS COORDENADAS EL VEHICULO SE PUEDE ENTURNAR ? " + (ok));
+
+        lma.setDetalle("ENTURNADO");
+        lma.setAsignaciones(asignacion);
+
+        registrarLogMovilAero(lma);
+
+        //if (!ok) {
+        if (false) {
+            log.info("FUERA DE ZONA AEROPUERTO...................");
+            return null;
+        } else {
+            int i = asignacion.getTurnos().iterator().next().getSitios().getId();
+            log.info("     BUSCANDO UBICAR EL VEHICULO EN ALGUN SITIO: ");
+
+            if (i != 5) {
+                log.info("EL VEHICULO YA TIENE TURNO ");
+                Sitios sitioTurnoActual = asignacion.getTurnos().iterator().next().getSitios();
+                Turnos turnos = asignacion.getTurnos().iterator().next();
+                turnos.setAsignaciones(asignacion);
+                turnos.setSitios(sitioTurnoActual);
+                return turnos;
+                // }
+            } else {
+
+                try {
+
+                    List<Sitios> PARQUEADERO = turnosXSitio(4);
+
+                    log.info("=============================================================");
+                    int existenciasPK = 0;
+                    int stockPK = 0;
+                    for (Sitios t : PARQUEADERO) {
+                        stockPK = t.getStock();
+                        existenciasPK = t.getExistencias();
+                    }
+                    List<Sitios> NUEVO_MUELLE = null;
+                    List<Sitios> MUELLE_NACIONAL = null;
+                    List<Sitios> MUELLE_INTERNACIONAL = null;
+
+                    String msj = "UBICAR EL AUTOMOVIL EN :";
+                    int turno = 0;
+                    if (existenciasPK > 0) {
+                        msj += " PARQUEADERO :) ";
+                        turno = existenciasPK;
+                        returno[0] = PARQUEADERO;// vehiculos enturnados
+                        returno[1] = 0; // sitio
+                        returno[2] = 0; // estado
+                    } else {
+                        log.info("1. Buscando los sitios:::: ");
+
+                        NUEVO_MUELLE = turnosXSitio(3);
+                        log.info("2. Buscando los sitios:::: ");
+                        int stockNM = 0;
+                        int existenciasNM = 0;
+                        for (Sitios t : NUEVO_MUELLE) {
+                            stockNM = t.getStock();
+                            existenciasNM = t.getExistencias();
+                        }
+
+                        if (existenciasNM > 0) {
+                            if (existenciasNM < stockNM) {
+                                msj += " NUEVO MUELLE :) ";
+                                turno = existenciasNM;
+                                returno[0] = NUEVO_MUELLE;// vehiculos enturnados
+                                returno[1] = 1; // sitio
+                                returno[2] = 1; // estado 
+                            } else {
+                                turno = existenciasPK;
+                                msj += " PARQUEADERO :) ";
+                                returno[0] = PARQUEADERO;// vehiculos enturnados
+                                returno[1] = 0; // sitio
+                                returno[2] = 0; // estado 
+                            }
+
+                        } else {
+                            log.info("2. Buscando los sitios:::: ");
+                            MUELLE_NACIONAL = turnosXSitio(2);//(List<Sitios>) q3.getResultList();
+                            int stockMN = 0;
+                            int existenciasMN = 0;
+                            for (Sitios t : MUELLE_NACIONAL) {
+                                stockMN = t.getStock();
+                                existenciasMN = t.getExistencias();
+                            }
+                            if (existenciasMN > 0) {
+                                if (existenciasMN < stockMN) {
+                                    turno = existenciasMN;
+                                    msj += " MUELLE NACIONAL :) ";
+                                    returno[0] = MUELLE_NACIONAL;// vehiculos enturnados
+                                    returno[1] = 2; // sitio
+                                    returno[2] = 2; // estado 
+                                } else {
+                                    turno = existenciasNM;
+                                    msj += " NUEVO MUELLE :) ";
+                                    returno[0] = NUEVO_MUELLE;// vehiculos enturnados
+                                    returno[1] = 0; // sitio
+                                    returno[2] = 0; // estado 
+                                }
+                            } else {
+                                MUELLE_INTERNACIONAL = turnosXSitio(1);//(List<Sitios>) q4.getResultList();
+                                int stockMI = 0;
+                                int existenciasMI = 0;
+                                for (Sitios t : MUELLE_INTERNACIONAL) {
+                                    stockMI = t.getStock();
+                                    existenciasMI = t.getExistencias();
+                                }
+                                if (existenciasMI > 0) {
+                                    if (existenciasMI < stockMI) {
+                                        turno = existenciasMI;
+                                        msj += " MUELLE INTERNACIONAL :) ";
+                                        returno[0] = MUELLE_INTERNACIONAL;// vehiculos enturnados
+                                        returno[1] = 2; // sitio
+                                        returno[2] = 2; // estado 
+                                    } else {
+                                        turno = existenciasMN;
+                                        msj += " MUELLE NACIONAL :) ";
+                                        returno[0] = MUELLE_NACIONAL;// vehiculos enturnados
+                                        returno[1] = 0; // sitio
+                                        returno[2] = 0; // estado 
+                                    }
+                                } else {
+                                    turno = existenciasMI;
+                                    msj += " MUELLE INTERNACIONAL :) ";
+                                    returno[0] = MUELLE_INTERNACIONAL;// vehiculos enturnados
+                                    returno[1] = 2; // sitio
+                                    returno[2] = 2; // estado 
+                                }
+                            }
+                        }
+                    }
+                    log.info(msj + " TURNO # " + (turno + 1));
+                    List<Sitios> tur = (List<Sitios>) returno[0];
+                    Sitios nuevoSitio = null;
+
+                    for (Sitios s : tur) {
+                        nuevoSitio = s;
+                        log.info("Nombre: " + s.getNombre());
+                        log.info("Stock : " + s.getStock());
+                        log.info("Exist : " + s.getExistencias());
+                    }
+
+                    Sitios antSitio = asignacion.getTurnos().iterator().next().getSitios();
+                    antSitio.setExistencias(antSitio.getExistencias() - 1);
+                    Turnos nuevoTurno = asignacion.getTurnos().iterator().next();
+                    nuevoTurno.setSitios(nuevoSitio);
+                    nuevoTurno.setTurno(turno + 1);
+                    nuevoTurno.setFecha(new Date());
+                    nuevoTurno = em.merge(nuevoTurno);
+                    Collection<Turnos> tt = asignacion.getTurnos();
+                    tt.add(nuevoTurno);
+                    Sitios s = nuevoTurno.getSitios();
+                    s.setExistencias(turno + 1);
+                    em.merge(s);
+                    em.merge(antSitio);
+                    asignacion.setTurnos(tt);
+                    //asignacion.setIdSitio(s.getId());
+                    em.merge(asignacion);
+                    return nuevoTurno;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+        }
+    }
+
+    public void registrarLogMovilAero(LogMovileAero log_moviles) {
+        try {
+            log_moviles.setFecha(new Date());
+            em.persist(log_moviles);
+        } catch (RuntimeException e) {
+        }
+    }
+
+    public void registrarLogMovilAero(Integer valNummovil, Integer codCiudades, Integer estado, Integer logout, LogMovileAero log) throws Exception {
+        Asignaciones asignacion = verificarMovil(valNummovil, codCiudades, null);
+        LogMovileAero lma = new LogMovileAero();
+        lma.setAsignaciones(asignacion);
+        try {
+            registrarLogMovilAero(lma);
+        } catch (RuntimeException e) {
+        }
+    }
+
+    public Poligonos getPoligono(Integer id) {
+        Query q = em.createNamedQuery("Poligonos.findById").setParameter("id", id);//Lugares.findAll
+        Poligonos misPoligonos = (Poligonos) q.getSingleResult();
+        return misPoligonos;
+    }
+
+    @Override
+    public Boolean containsPoint(double latitud, double longitud, Sitios sitio) {
+
+        try {
+            Poligonos p = getPoligono(2);
+            Polygon polygon = new PoligonoTools().createPolygonFromVerticesArray(new PoligonoTools().createVerticesArrayFromVerticesPoligono((List<Vertices>) p.getVertices()));
+            if (polygon != null) {
+                vertices.put(p.getId(), polygon);
+            }
+            Coordinate c = new Coordinate(new CardinalConverter().transformarCoordenadasDecimal(latitud), new CardinalConverter().transformarCoordenadasDecimal(longitud * -1));
+            Geometry punto = new GeometryFactory().createPoint(c);
+            Iterator<Integer> iterator = vertices.keySet().iterator();
+
+            while (iterator.hasNext()) {
+                Integer id = iterator.next();
+                Polygon _polygon = vertices.get(id);
+                if (_polygon.contains(punto)) {
+                    poligonoOK = true;
+                    log.info("La ubicacion " + latitud + " , " + longitud + " esta dentro de " + p.getNombre());
+                    return poligonoOK;
+                }
+            }
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+        return (poligonoOK);
+    }
+
+    public TarifasAero tariasById(Integer id) {
+        Query q3 = em.createNamedQuery("TarifasAero.findByLlave");
+        q3.setParameter("llave", id);
+        q3.setMaxResults(1);
+        TarifasAero test = null;
+        try {
+            test = (TarifasAero) q3.getSingleResult();
+            log.info(test.getValor());
+        } catch (Exception e) {
+            log.info("no se peude consutlar las tarifas............");
+            e.printStackTrace();
+        }
+        return test;
+    }
+
+    public CajerosAero loginUser(CajerosAero usuario, Integer id) {
+        Sitios sitios = null;
+        try {
+            sitios = sitioById(id);
+            log.info("SITIO ENCONTRADO: " + sitios.getNombre());
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+        try {
+            log.info("BUSCANDO EL USUARIO PARA EL SITIO");
+
+            Query query = em.createNamedQuery("CajerosAero.findByUsuarioByClave");
+            query.setParameter("usuario", usuario.getUsuario());
+            query.setParameter("clave", new Md5Helper().encodeMD5(usuario.getClave()));
+            CajerosAero user = (CajerosAero) query.getSingleResult();
+            user.setSitios(sitios);
+            log.info("USUARIO ENCONTRADO " + user.getNombre());
+            return user;
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public void enviarMensajeMovil(Integer movil, String msj) {
+        try {
+            Asignaciones asignacion = verificarMovil(movil, 11005, null);
+            enviarDatosRadioloc(asignacion.getIp(), msj);
+        } catch (Exception e) {
+        }
+
+    }
+
+    @Override
+    public List<Sitios> todosSitios() {
+        System.out.println("in buscnado todos los sitios");
+        Query q = em.createNamedQuery("Sitios.findAll");//Sitios.findById
+        List<Sitios> listSitios = (List<Sitios>) q.getResultList();
+        System.out.println("sitios encotrados,,,");
+        return listSitios;
+    }
+
+    public boolean administrarSitios(String... args) {
+        log.info("testttttttt...................");
+        Query q3 = em.createNamedQuery("Sitios.findAll");
+        List<Sitios> test = (List<Sitios>) q3.getResultList();
+
+        log.info("==============================");
+
+        List<Sitios> placeNV = new ArrayList<Sitios>();
+        for (Sitios s : test) {
+            Sitios ss = new Sitios();
+
+            log.info("s:id " + s.getId() + " " + s.getNombre());
+            if (s.getId().equals(0)) {
+                //  s.setStock(Integer.parseInt(args[0]));
+            } else if (s.getId().equals(1)) {
+                ss.setStock(Integer.parseInt(args[0]));
+            } else if (s.getId().equals(2)) {
+                ss.setStock(Integer.parseInt(args[1]));
+            } else if (s.getId().equals(3)) {
+                ss.setStock(Integer.parseInt(args[2]));
+            }
+            log.info("Id:= " + s.getNombre());
+            placeNV.add(ss);
+        }
+
+        log.info("===========================");
+        for (int i = 0; i < placeNV.size(); i++) {
+            log.info("PLACE ==>  " + placeNV.get(i).getStock());
+        }
+        return false;
+    }
+
+    public List<Turnos> reorganizarTurnos(List<Turnos> turnos) {
+        Set<Sitios> todosSitios = new HashSet<Sitios>();
+        log.info("________________________________________");
+        //Set<Turnos> todosTurnos = new HashSet<Turnos>();
+        List<Turnos> lTodosTurnos = new ArrayList<Turnos>();
+        for (Sitios s : todosSitios()) {
+            //((log.info(s.getNombre());
+            todosSitios.add(s);
+            for (Turnos ss : s.getTurnos()) {
+                //todosTurnos.add(ss);
+                lTodosTurnos.add(ss);
+                log.info("¡¡¡   " + ss.getSitios().getNombre());
+            }
+        }
+        return lTodosTurnos;
+
+    }
+}
