@@ -237,7 +237,7 @@ public class SendMail {
         properties.put("mail.smtp.host", host);
         properties.put("mail.smtp.user", from);
         properties.put("mail.smtp.password", pass);
-        properties.put("mail.smtp.port", "587");
+        properties.put("mail.smtp.port", "25");
         properties.put("mail.smtp.auth", "true");
 
         // Get the default Session object.

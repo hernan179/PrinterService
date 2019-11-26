@@ -386,7 +386,7 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             e.printStackTrace();
         }
 
-        String jsonCierre = new WebserviceConnection(host, port).getStatusAccount(getJSONHacerCierre(cajeros.getIdUsuario(), false));
+        String jsonCierre = new WebserviceConnection(host, port).getStatusAccount(getJSONHacerCierre(cajeros.getIdUsuario(),cajeros.getIdSitio(), false));
 
         String error = "Cierre no encontrado, favor intente nuevamente";
         Cierre cie = new Cierre();
@@ -435,7 +435,7 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         } else if (response == JOptionPane.YES_OPTION) {
             try {
                 pr.load(new FileReader(getCurrentWorkingDirectory() + "/configurar.properties"));
-                jsonCierre = new WebserviceConnection(host, port).getStatusAccount(getJSONHacerCierre(cajeros.getIdUsuario(), true));
+                jsonCierre = new WebserviceConnection(host, port).getStatusAccount(getJSONHacerCierre(cajeros.getIdUsuario(),cajeros.getIdSitio(), true));
                 if (isOK(jsonCierre)) {
                     RtaDTO obj = gson.fromJson(jsonCierre, RtaDTO.class);
                     for (JsonDTO p : obj.getAlertas()) {

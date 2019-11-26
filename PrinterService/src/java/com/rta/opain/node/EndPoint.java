@@ -623,7 +623,7 @@ public class EndPoint implements EndPointRemote {
                         srv.setBase(StringTools.getNumberInt(j.getBase()));
                         srv.setValoro(StringTools.getNumberInt(j.getValoro()));
 
-                        srv.setIndProc(Integer.valueOf(0));
+                        srv.setIndProc(0);
 
                         Servicios nvSrv = service.saveServicio(srv);
                         if (nvSrv != null) {
@@ -744,9 +744,9 @@ public class EndPoint implements EndPointRemote {
                         Integer[] precioYbase = Tarifas.getValorReteIcaFuente(costo);
 
                         int tmp = precioYbase[0].intValue();
-                        costo = Integer.valueOf(precioYbase[0].intValue() + 4000);
+                        costo = Integer.valueOf(precioYbase[0].intValue() + 2000);
                         precioYbase[0] = costo;
-                        rw("=====INCREMENTO_4000_1_OCT_2019_SIN_BASE====" + costo + "____antes_" + tmp);
+                        rw("=====INCREMENTO_2000_1_OCT_2019_SIN_BASE====" + costo + "____antes_" + tmp);
                         dto.setPesos(precioYbase[0].toString());
                         dto.setBase(precioYbase[0].toString());
                         dto.setPrecio(precioYbase[0].toString());
@@ -856,7 +856,7 @@ public class EndPoint implements EndPointRemote {
                 List<JsonDTO> lRta = new ArrayList<JsonDTO>();
                 CajerosAero CAJERO = service.usuarioById(getNumberInt(dto.getIdUsuario()));
 
-                Object obj[] = service.cerrarServicios(CAJERO, new Boolean(dto.getCierre()), null);
+                Object obj[] = service.cerrarServicios(CAJERO,dto.getIdSitio(), new Boolean(dto.getCierre()), null);
                 JsonDTO dto2 = new JsonDTO();
                 RtaDTO rtaDTO = new RtaDTO();
                 if (obj != null && obj.length > 1 && obj[1] != null) {
@@ -1259,6 +1259,12 @@ public class EndPoint implements EndPointRemote {
                     }
                     if (entra[0].mac != null && !entra[0].mac.equals("null") && entra[0].mac.equals("00:90:4c:59:fc:1f")) {//
                         rtaDTO.setMac("00:0C:BF:13:33:9B");
+                    }
+                    
+                    if (entra[0].mac != null && !entra[0].mac.equals("null") && entra[0].mac.equals("00:90:4c:59:fc:1f")) {//
+                        //rtaDTO.setMac("00:0C:BF:13:35:6F");
+                        rtaDTO.setMac("00:0C:BF:13:6B:2E");
+                                       
                     }
 
                     pesos = gson.toJson(rtaDTO, RtaDTO.class);

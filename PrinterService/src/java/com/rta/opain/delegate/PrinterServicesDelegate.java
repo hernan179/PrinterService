@@ -724,9 +724,9 @@ public class PrinterServicesDelegate implements PrinterServicesDelegateRemote {
     }
 
     @Override
-    public Object[] cerrarServicios(CajerosAero usuario, boolean control, Properties pr) {
+    public Object[] cerrarServicios(CajerosAero usuario,String idSitio, boolean control, Properties pr) {
         try {
-            Object[] obj = service.cerrarServicios2(usuario, control, pr);
+            Object[] obj = service.cerrarServicios2(usuario, idSitio,control, pr);
             return obj;
         } catch (Exception e) {
             return null;

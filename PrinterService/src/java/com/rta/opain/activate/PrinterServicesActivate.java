@@ -1879,7 +1879,7 @@ public class PrinterServicesActivate implements PrinterServicesActivateRemote {
     }
 
     @Override
-    public Object[] cerrarServicios2(CajerosAero usuario, boolean control, Properties pr) {
+    public Object[] cerrarServicios2(CajerosAero usuario,String idSitio, boolean control, Properties pr) {
         Multipart multipart = null;
         try {
             List<Servicios> srv = null;
@@ -1896,6 +1896,13 @@ public class PrinterServicesActivate implements PrinterServicesActivateRemote {
                 multipart.addBodyPart(part);
 
             }
+            String andSitio = "";
+            String tmpSitio = idSitio;
+            if(idSitio != null){
+               idSitio = " ,sitios_id "; 
+               andSitio = " and sitios_id = "+tmpSitio;
+            }
+            rw("sitio________"+idSitio);
 
             String sql = "select sum(valore) as EFECTIVO,sum(valord) AS DEBIDO,sum(valorc) AS CREDITO,sum(valor) AS VALOR,max(numero) as ULTIMA,min(numero) AS PRIMERA,comprob\n"
                     + ",(SELECT COUNT(*) FROM srv_camioneta WHERE grabador ='" + usuario.getUsuario() + "' and cierre = 0 AND estado_id = 26  GROUP BY VALOR) AS TOTAL_ANULADAS\n"
@@ -1914,11 +1921,11 @@ public class PrinterServicesActivate implements PrinterServicesActivateRemote {
                     + ",(select count(*) from srv_camioneta where grabador ='" + usuario.getUsuario() + "' and cierre = 0) as CANTIDAD\n"
                     + " ,(SELECT sum(valore+valord+valorc) FROM srv_camioneta WHERE grabador ='" + usuario.getUsuario() + "' and cierre = 0 AND estado_id = 26  GROUP BY VALOR) AS VALOR_ANULADO "
                     + ",(select nombre from sitios where id = sitios_id) as nombreSitio "
-                    + "from srv_camioneta \n"
+                    + " "+idSitio+" from srv_camioneta \n"
                     + "where id in(\n"
                     + "select id\n"
                     + "from srv_camioneta \n"
-                    + "where grabador ='" + usuario.getUsuario() + "' and cierre = 0 --and estado_id = 27 \n"
+                    + "where grabador ='" + usuario.getUsuario() + "' and cierre = 0 "+andSitio
                     + ") GROUP BY comprob,sitios_id";
 
             rw("sql_" + sql);
@@ -1961,7 +1968,7 @@ public class PrinterServicesActivate implements PrinterServicesActivateRemote {
 
                 if (control) {
                     try {
-                        String sqlUpdate = "update srv_camioneta set cierre = 1 where grabador ='" + usuario.getUsuario() + "' and cierre = 0";
+                        String sqlUpdate = "update srv_camioneta set cierre = 1 where grabador ='" + usuario.getUsuario() + "' and cierre = 0 and sitios_id = "+tmpSitio;
                         rw("sqlUpdate_" + sqlUpdate);
                         em.createNativeQuery(sqlUpdate).executeUpdate();
                         new SendMail().sendMesageCierre2(cierre, multipart);

@@ -40,7 +40,7 @@ public class ScheduleEJB {
                         
             if (values != null) {
                 for (String s : values) {
-                    service.cerrarServicios(new CajerosAero(getNumberInt(s)), true, null);
+                    service.cerrarServicios(new CajerosAero(getNumberInt(s)),null, true, null);
                 }
                 new SendMail().sendMesageCierreFinDeMes("Cirre enviar con exito");
             } else {

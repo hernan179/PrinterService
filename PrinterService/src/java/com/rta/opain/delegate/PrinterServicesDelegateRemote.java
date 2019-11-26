@@ -123,7 +123,7 @@ public interface PrinterServicesDelegateRemote {
 
     public boolean logout(Integer movil) throws Exception;
 
-    public Object[] cerrarServicios(CajerosAero usuario, boolean control, Properties pr);
+    public Object[] cerrarServicios(CajerosAero usuario,String idSitio, boolean control, Properties pr);
 
     public Servicios anulacion(Long numero, String porque, Sitios sitio, Date date) throws Exception;
 

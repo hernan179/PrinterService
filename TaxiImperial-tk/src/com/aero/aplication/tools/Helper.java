@@ -38,7 +38,7 @@ public class Helper {
     public static Date addDay() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date()); // Configuramos la fecha que se recibe
-       // calendar.add(Calendar.DAY_OF_YEAR, 2);  // numero de días a añadir, o restar en caso de días<0
+        calendar.add(Calendar.DAY_OF_YEAR, 1);  // numero de días a añadir, o restar en caso de días<0
         return calendar.getTime();
     }
 
@@ -190,8 +190,9 @@ public class Helper {
     }
 
     public static void main(String[] args) throws Exception {
+       Date manana = addDay();
         String ddd = fechaActual(new Date());
-           System.out.println("fech_"+ddd);
+           System.out.println("fech_"+manana);
         
         //String sFecha = "2017-09-29 10:20 am";
         //Date fech = toDateYYMMDDHHMM(sFecha);
@@ -356,11 +357,12 @@ public class Helper {
                 + "";
     }
 
-    public static String getJSONHacerCierre(String idUsuario, boolean sino) {
+    public static String getJSONHacerCierre(String idUsuario,String idSitio, boolean sino) {
         return "[\n"
                 + "    {\n"
                 + "        \"empresaId\":\"12\",\n"
                 + "	   \"idUsuario\":\"" + idUsuario + "\",\n"
+                + "	   \"idSitio\":\"" + idSitio + "\",\n"
                 + "	   \"ip\":\"" + getIpPc() + "\",\n"
                 + "	   \"fecha\":\"" + getColCurrentTime() + "\",\n"
                 + "	   \"cierre\":\"" + sino + "\",\n"

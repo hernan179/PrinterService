@@ -135,7 +135,7 @@ public interface PrinterServicesActivateRemote {
 
     public Object[] cerrarServicios(CajerosAero usuario, boolean control, Properties pr);
 
-    public Object[] cerrarServicios2(CajerosAero usuario, boolean control, Properties pr);
+    public Object[] cerrarServicios2(CajerosAero usuario,String idSitio, boolean control, Properties pr);
 
     public Servicios anulacion(Long numero, String porque, Sitios sitio, Date fecha) throws Exception;
 
