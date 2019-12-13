@@ -49,7 +49,7 @@ public class DateHelper {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String sFecha = sdf.format(fDate);
         String part[] = sFecha.split("\\-");
-        
+
         String anio = part[0];
         String mes = part[1];
         String dia = "01";
@@ -161,15 +161,15 @@ public class DateHelper {
         Date date = null;
         try {
 
-            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", new Locale("es_ES"));
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             date = formatter.parse(str_date.replaceAll("/", "-"));
         } catch (Exception e) {
             return null;
         }
         return date;
     }
-    
-       public static Date stringToDate2(String str_date) {
+
+    public static Date stringToDate2(String str_date) {
         Date date = null;
         try {
 
@@ -184,12 +184,12 @@ public class DateHelper {
     public static Date toDateYYYYMMDDHHMM2(String str_date) {
         Date date = null;
         try {
-            
-            if(str_date.contains("\\/")){
+
+            if (str_date.contains("\\/")) {
                 str_date.replaceAll("\\/", "-");
             }
-            
-            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm", new Locale("es_ES"));
+
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             date = formatter.parse(str_date);
         } catch (Exception e) {
             //e.printStackTrace();
@@ -201,7 +201,28 @@ public class DateHelper {
 
     public static Date toDateYYYYMMDDHHMM(String str_date) {
         Date date = null;
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm a", new Locale("es_ES"));
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+
+            date = formatter.parse(str_date);
+        } catch (Exception e) {
+            //e.printStackTrace();
+            //return null;
+            String date2 = formatter.format(new Date());
+            try {
+                date = formatter.parse(date2);
+            } catch (Exception e2) {
+                return new Date();
+            }
+        }
+        // rw("Fecha como string :   " + str_date + "  es:  " + date);
+        return date;
+    }
+
+    public static Date toDateYYYYMMDDHHMM_eror(String str_date) {
+        Date date = null;
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
         try {
 
             date = formatter.parse(str_date);
@@ -223,7 +244,22 @@ public class DateHelper {
         String date = null;
         try {
 
-            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm a", new Locale("es_ES"));
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            date = formatter.format(str_date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            //  return null;
+
+        }
+        //rw("Fecha como date :   " + str_date + "  estring:  " + date);
+        return date;
+    }
+
+    public static String toDateYYYYMMDDHHMMOK(Date str_date) {
+        String date = null;
+        try {
+
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             date = formatter.format(str_date);
         } catch (Exception e) {
             e.printStackTrace();
@@ -252,7 +288,7 @@ public class DateHelper {
 
         rw("Diferencia entre fecha1: " + inicio + " fecha2:" + fin);
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale("es_ES"));
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         String[] date = dateFormat.format(inicio).split("-");
         final long MILLSECS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -269,7 +305,7 @@ public class DateHelper {
     }
 
     public static Long restartMinutos(Date fechaInicio, Date fechaFin) {
-        SimpleDateFormat smdf = new SimpleDateFormat("yyyy-MM-dd HH:mm a", new Locale("es_ES"));
+        SimpleDateFormat smdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         try {
             String s1 = smdf.format(fechaInicio);
             String s2 = smdf.format(fechaFin);
@@ -288,50 +324,50 @@ public class DateHelper {
     }
 
     public static void main(String[] args) throws Exception {
+        Date fecha = toDateYYYYMMDDHHMM_eror("2019-12-06 13:28");//fecha_Fri Dec 06 17:19:00 COT 2019
+                                                                 //fecha_Fri Dec 06 13:28:00 COT 2019
+        System.out.println("fecha_" + fecha.toString());
 
-        Date fecha = stringToDate("11/01/2018");
-        System.out.println("ddddddddddddddddddddddddddddd_"+fecha);
-        
-        
-        String ddd = fechaIniMes();
-        System.out.println("ddd_"+ddd);
-        
-       Date fecha1 = stringToDate("2018/01/23 00:00");
-       Date fecha2 = stringToDate("2018/01/23 07:55");
-       
-       int dias = calcularDiferenciaEntreFechas(fecha1, fecha2);
-        System.out.println("fecha_1"+fecha1);
-        System.out.println("fecha_2"+fecha2);
-        System.out.println("fecha_dias_"+dias);
-        
-        
-        
-        String values = getFechaFile(60);
-
-        System.out.println("============== " + values);
-
-        restarMinutos(5);
-
-        String sFecha = _3Dias();//04-30-2017
-        System.out.println("sFecha: " + sFecha);
-
-        String fech = primerDia(new Date());
-        System.out.println("fech: " + fech);
-
-        Date d = toDateYYYYMMDDHHMM2("2016-09-29 10:16 AM");
-        System.out.println("f: " + d);
-
-        Date dd = restartMinutos(new Date(), 60 * 5);
-        System.out.println("restar minutos: " + new Date() + " menos 5h " + dd);
-
-        String date = "2016-06-30 14:57:11.0";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Date sDates = sdf.parse(date);
-        System.out.println("date: " + sDates);
-
-        isFestivo();
+//        
+//        Date fecha = stringToDate("11/01/2018");
+//        System.out.println("ddddddddddddddddddddddddddddd_"+fecha);
+//        
+//        
+//        String ddd = fechaIniMes();
+//        System.out.println("ddd_"+ddd);
+//        
+//       Date fecha1 = stringToDate("2018/01/23 00:00");
+//       Date fecha2 = stringToDate("2018/01/23 07:55");
+//       
+//       int dias = calcularDiferenciaEntreFechas(fecha1, fecha2);
+//        System.out.println("fecha_1"+fecha1);
+//        System.out.println("fecha_2"+fecha2);
+//        System.out.println("fecha_dias_"+dias);
+//        String values = getFechaFile(60);
+//
+//        System.out.println("============== " + values);
+//
+//        restarMinutos(5);
+//
+//        String sFecha = _3Dias();//04-30-2017
+//        System.out.println("sFecha: " + sFecha);
+//
+//        String fech = primerDia(new Date());
+//        System.out.println("fech: " + fech);
+//
+//        Date d = toDateYYYYMMDDHHMM2("2016-09-29 10:16 AM");
+//        System.out.println("f: " + d);
+//
+//        Date dd = restartMinutos(new Date(), 60 * 5);
+//        System.out.println("restar minutos: " + new Date() + " menos 5h " + dd);
+//
+//        String date = "2016-06-30 14:57:11.0";
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//        Date sDates = sdf.parse(date);
+//        System.out.println("date: " + sDates);
+//
+//        isFestivo();
         //System.out.println("is festivo: " + isFestivo());
-
 //        System.out.println("dia mes: " + primerDia(new Date()));
 //
 //        Date f1 = toDateYYYYMMDDHHMM("2015-04-21 00:00 PM");
@@ -373,14 +409,14 @@ public class DateHelper {
 
     public static String nowTimeDateEasy() {
         // SimpleDateFormat dma = new SimpleDateFormat("MMMM dd yyyy HH:mmm a", new Locale("es_ES"));
-        SimpleDateFormat dma = new SimpleDateFormat("yyyy MMMM dd HH:mmm a", new Locale("es_ES"));
+        SimpleDateFormat dma = new SimpleDateFormat("yyyy MMMM dd HH:mmm");
         return dma.format(new Date());
 
     }
 
     public static String nowTimeDateEasy2() {
         // SimpleDateFormat dma = new SimpleDateFormat("MMMM dd yyyy HH:mmm a", new Locale("es_ES"));
-        SimpleDateFormat dma = new SimpleDateFormat("yyyy-MM-dd HH:mm", new Locale("es_ES"));
+        SimpleDateFormat dma = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         return dma.format(new Date());
 
     }

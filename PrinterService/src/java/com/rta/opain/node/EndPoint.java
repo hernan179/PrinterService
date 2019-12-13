@@ -303,6 +303,8 @@ public class EndPoint implements EndPointRemote {
                 srv.setComprob("VJS");
                 srv.setFechaGrab(toDateYYYYMMDDHHMM(fecha));
                 srv.setIndProc(0);
+                //srv.setIndProc(9);
+
                 srv.setEstado(new Estados(27));
                 srv.setCierre(0);
                 if (tipoPago.equals("efectivo")) {
@@ -623,7 +625,8 @@ public class EndPoint implements EndPointRemote {
                         srv.setBase(StringTools.getNumberInt(j.getBase()));
                         srv.setValoro(StringTools.getNumberInt(j.getValoro()));
 
-                        srv.setIndProc(0);
+                        srv.setIndProc(0);// facturas producicon
+                        //srv.setIndProc(9);
 
                         Servicios nvSrv = service.saveServicio(srv);
                         if (nvSrv != null) {
@@ -729,7 +732,7 @@ public class EndPoint implements EndPointRemote {
                 }
                 rw("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
                 JsonDTO data = GeoReferenciador.zonificadorAndGeoRuteo(entra[0].direccion, "11001", latitud, longitud);
-                rw("%%%%%%%%%%%%%%%%%%%metros%%   "+data.getMetros()+"  %%%%%%%%%%%%%%%%%%%%%%%%%%");
+                rw("%%%%%%%%%%%%%%%%%%%metros%%   " + data.getMetros() + "  %%%%%%%%%%%%%%%%%%%%%%%%%%");
                 Integer costo = 0;
                 if (getNumberInt(data.getMetros()) > 0) {
                     if (isPrice || isCRB) {
@@ -856,7 +859,7 @@ public class EndPoint implements EndPointRemote {
                 List<JsonDTO> lRta = new ArrayList<JsonDTO>();
                 CajerosAero CAJERO = service.usuarioById(getNumberInt(dto.getIdUsuario()));
 
-                Object obj[] = service.cerrarServicios(CAJERO,dto.getIdSitio(), new Boolean(dto.getCierre()), null);
+                Object obj[] = service.cerrarServicios(CAJERO, dto.getIdSitio(), new Boolean(dto.getCierre()), null);
                 JsonDTO dto2 = new JsonDTO();
                 RtaDTO rtaDTO = new RtaDTO();
                 if (obj != null && obj.length > 1 && obj[1] != null) {
@@ -927,6 +930,7 @@ public class EndPoint implements EndPointRemote {
                 if (getNumberInt(tiqueteNuevo.getSitio()).toString().equals("9")) {
                     //  srv.setIndProc(getNumberInt("1"));
                 }
+                srv.setIndProc(getNumberInt("0"));// facturas en produciocn debe ser estado 0
                 // colocar el grabador...
                 srv.setGrabador(tiqueteNuevo.getGrabador());
 
@@ -1017,7 +1021,7 @@ public class EndPoint implements EndPointRemote {
                 srv.setComprob(tiqueteNuevo.getComprob());
 
                 srv.setAddres(Utilidades.eliminarBarusar(tiqueteNuevo.getDireccion()));
-                srv.setFecha(DateHelper.toDateYYYYMMDDHHMM(tiqueteNuevo.getFecha()));
+                srv.setFecha(DateHelper.toDateYYYYMMDDHHMM(tiqueteNuevo.getFechaGrab()));
                 srv.setFechaGrab(DateHelper.toDateYYYYMMDDHHMM(tiqueteNuevo.getFechaGrab()));
                 srv.setUsuarios(new CajerosAero(StringTools.getNumberInt(tiqueteNuevo.getIdUsuario())));
                 srv.setValor(StringTools.getNumberInt(tiqueteNuevo.getValor()));
@@ -1030,7 +1034,6 @@ public class EndPoint implements EndPointRemote {
                 srv.setBase(StringTools.getNumberInt(tiqueteNuevo.getBase()));
                 if (StringTools.getNumberInt(tiqueteNuevo.getSitio()).toString().equals("8")) {
                 }
-                srv.setIndProc(0);
 
                 srv.setTipoPago("BALOTO");
 
@@ -1049,6 +1052,8 @@ public class EndPoint implements EndPointRemote {
                     srv.setIndProc(0);
                     srv.setValorC(getNumberInt(tiqueteNuevo.getValor()));
                 }
+                srv.setIndProc(0);// en produccion
+                //srv.setIndProc(9);
 
                 if (getNumberInt(tiqueteNuevo.getValor()) > 0) {
                     if (getNumberInt(tiqueteNuevo.getBase()) > 0) {
@@ -1260,12 +1265,20 @@ public class EndPoint implements EndPointRemote {
                     if (entra[0].mac != null && !entra[0].mac.equals("null") && entra[0].mac.equals("00:90:4c:59:fc:1f")) {//
                         rtaDTO.setMac("00:0C:BF:13:33:9B");
                     }
-                    
+
                     if (entra[0].mac != null && !entra[0].mac.equals("null") && entra[0].mac.equals("00:90:4c:59:fc:1f")) {//
                         //rtaDTO.setMac("00:0C:BF:13:35:6F");
                         rtaDTO.setMac("00:0C:BF:13:6B:2E");
-                                       
+
                     }
+                    rw("NUEVA_MAC_" + entra[0].mac);
+                    if (entra[0].mac != null && !entra[0].mac.equals("null") && entra[0].mac.toUpperCase().equals("24:00:BA:EF:D3:8B")) {//
+                        //rtaDTO.setMac("00:0C:BF:13:35:6F");
+                        rw("NUEVA_MAC_" + entra[0].mac);
+                        rtaDTO.setMac("00:0C:BF:12:14:AB");
+
+                    }
+                    //00:0C:BF:12:14:AB
 
                     pesos = gson.toJson(rtaDTO, RtaDTO.class);
                     // rw(json);
@@ -1445,6 +1458,9 @@ public class EndPoint implements EndPointRemote {
                     Integer valoro = Utilidades.getNumberIntNito(srv);
                     j.setValoro(valoro.toString());
                     j.setBase("" + srv.getBase());
+
+                    srv.setIndProc(0);//en produccion 
+//srv.setIndProc(9);
 
                     rtaDTO.setError("ok");
                     srvPendientes.add(j);

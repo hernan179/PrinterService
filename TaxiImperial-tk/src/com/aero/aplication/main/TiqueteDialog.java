@@ -1091,17 +1091,15 @@ public class TiqueteDialog extends JDialog {
                     String json = (String) obj[2];
                     srv.setValorD("" + debitoCliente);
                     srv.setValorC("" + creditoCliente);
-                    srv.setAddres(destino);
                     srv.setBase(myBase.toString());
 
                     srv.setValorE("" + (efectivoCliente - Helper.getNumberInt(jtfDarVueltas.getText().replace(".", ""))));
                     srv.setSitio(sitios);
                     srv.setValor(jtfValor.getText());
-                    srv.setAddres(jtaDireccion.getText().trim());
+
                     tiquete.setValor(srv.getValor());
                     tiquete.setOrigen(sitios.getDireccion());
                     tiquete.setDestino(jtaDireccion.getText().trim());
-                    
 
                     if (tiquete != null) {
                         int response = 1;
@@ -1234,16 +1232,16 @@ public class TiqueteDialog extends JDialog {
                             //tiquete.setFecha(Helper.toDateYYYYMMDD(tiquete.getFecha()));
                             //tiquete.setFechaFin(Helper.toDateYYYYMMDD(tiquete.getFechaFin()));
                             // if (sitios.getIdSitio().equals("8")) {
-                           
+
                             //}
                             //new WebserviceConnection(host, port).getStatusAccount(Helper.registroFactura(tiquete));
                             if (validarPlaca) {
                                 generePOST(tiquete.getId().toString());//impresion impresora POST
                                 genereFUEC2(tiquete);//generar PDF
-                                 
-                            }else{
+
+                            } else {
                                 // generar qr nuevo
-                            generePOST_QR(tiquete.getId().toString());//impresion impresora POST
+                                generePOST_QR(tiquete.getId().toString());//impresion impresora POST
                             }
                         }
 
@@ -1289,7 +1287,7 @@ public class TiqueteDialog extends JDialog {
                 String json = (String) obj[2];
                 srv.setValorD("" + debitoCliente);
                 srv.setValorC("" + creditoCliente);
-                srv.setAddres(destino);
+              
 
                 srv.setValorE("" + (efectivoCliente - Helper.getNumberInt(jtfDarVueltas.getText().replace(".", ""))));
                 srv.setSitio(sitios);
@@ -1297,7 +1295,7 @@ public class TiqueteDialog extends JDialog {
                 tiquete.setValor(srv.getValor());
                 tiquete.setOrigen(sitios.getDireccion());
                 tiquete.setDestino(jtaDireccion.getText().trim());
-                
+            
 
                 if (tiquete != null) {
                     int response = 1;
@@ -1394,7 +1392,7 @@ public class TiqueteDialog extends JDialog {
             pr.load(new FileReader(getCurrentWorkingDirectory() + "/configurar.properties"));
             String[] CP = new String[]{"===COPIA EMPRESA===", "===COPIA CONDUCTOR===", "===COPIA USUARIO==="};
             for (int i = 0; i < 1; i++) {
-                
+
                 byte[] bytes = new CrearDocumento().generarFactura_qr(tiquete, sitios, pr, CP[i]);
                 PrintPdf printPDFFile = new PrintPdf(bytes, "Test Print PDF");
                 printPDFFile.print();
@@ -1405,7 +1403,8 @@ public class TiqueteDialog extends JDialog {
             JOptionPane.showMessageDialog(null, "Error al imprimir el archivo, favor reimprimirlo nuevamente");
         }
     }
-     public void generePOST(String a) {
+
+    public void generePOST(String a) {
         try {
             Properties pr = new Properties();
             pr.load(new FileReader(new InitHelper().getCurrentWorkingDirectory() + "/factura.properties"));
@@ -1546,7 +1545,7 @@ public class TiqueteDialog extends JDialog {
 
         long precio = Helper.getNumberLong(jtfValor.getText());
         try {
-            Servicios servicio = new Servicios();
+           // Servicios servicio = new Servicios();
 
             Properties pr = new Properties();
             pr.load(new FileReader(getCurrentWorkingDirectory() + "/configurar.properties"));
@@ -1561,7 +1560,7 @@ public class TiqueteDialog extends JDialog {
             System.out.println("isWS " + isWS);
 
             tiquete.setDestino(direccion);
-            tiquete.setId(Helper.getNumberLong(servicio.getId()));
+            tiquete.setId(Helper.getNumberLong(srv.getId()));
             tiquete.setValor("" + precio);
             tiquete.set2300("0");
             tiquete.setDistancia(0);
@@ -1571,8 +1570,7 @@ public class TiqueteDialog extends JDialog {
             tiquete.setUsuario(user);
             tiquete.setTipoPago("005");
             tiquete.setConductor("No DISP");
-            servicio.setAddres(direccion);
-            
+           // servicio.setAddres(direccion + "|" + nombre + "|" + nit);
 
             String nits = null;
             String _nits[] = null;
@@ -1584,7 +1582,7 @@ public class TiqueteDialog extends JDialog {
 
                 Object[] obj2 = new Object[3];
                 obj2[0] = tiquete;
-                obj2[1] = servicio;
+                obj2[1] = srv;
                 obj2[2] = "";
                 return obj2;
             }
@@ -1727,28 +1725,28 @@ public class TiqueteDialog extends JDialog {
                                 tiquete.setNit(getString(nits));
                                 tiquete.setPlaca(obj.getPlaca());
 
-                                servicio.setNit(getString(obj.getNitPagador()));
-                                servicio.setAutoPlaca(PLACA.toUpperCase());
-                                servicio.setGrabador(user.getUsuario());
-                                servicio.setValor(tiquete.getValor());
+                                srv.setNit(getString(obj.getNitPagador()));
+                                srv.setAutoPlaca(PLACA.toUpperCase());
+                                srv.setGrabador(user.getUsuario());
+                                srv.setValor(tiquete.getValor());
 
-                                if (tiquete.getNombre() != null) {
-                                    servicio.setAddres(tiquete.getDestino() + "|" + tiquete.getNombre() + "|" + tiquete.getNit());
-                                } else {
-                                    servicio.setAddres(tiquete.getDestino());
-                                }
+//                                if (tiquete.getNombre() != null) {
+//                                    srv.setAddres(tiquete.getDestino() + "|" + tiquete.getNombre() + "|" + tiquete.getNit());
+//                                } else {
+//                                    srv.setAddres(tiquete.getDestino());
+//                                }
 
-                                servicio.setFecha(Helper.getColCurrentTime());
+                                srv.setFecha(Helper.getColCurrentTime());
 
-                                servicio.setUsuarios(tiquete.getUsuario());
-                                servicio.setTipoPago(tiquete.getTipoPago());
-                                servicio.setUsuarios(user);
-                                servicio.setComprob(VJS);
-                                servicio.setCierre("0");
+                                srv.setUsuarios(tiquete.getUsuario());
+                                srv.setTipoPago(tiquete.getTipoPago());
+                                srv.setUsuarios(user);
+                                srv.setComprob(VJS);
+                                srv.setCierre("0");
 
                                 Object[] obj2 = new Object[3];
                                 obj2[0] = tiquete;
-                                obj2[1] = servicio;
+                                obj2[1] = srv;
                                 obj2[2] = entradaPlaca;
                                 return obj2;
                             }

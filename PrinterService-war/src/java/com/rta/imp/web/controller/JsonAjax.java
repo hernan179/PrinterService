@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONObject;
 import static com.rta.opain.delegate.tools.DateHelper.toDateYYYYMMDDHHMM;
+import static com.rta.opain.delegate.tools.DateHelper.toDateYYYYMMDDHHMMOK;
 import java.util.Set;
 import static com.rta.opain.delegate.tools.LogTest.rw;
 import com.rta.opain.domain.Servicios;
@@ -46,7 +47,7 @@ public class JsonAjax {
 
             JsonDTO json = new JsonDTO();
             json.setNumero(r.getNumero().toString());
-            json.setFecha(toDateYYYYMMDDHHMM(r.getFecha()));
+            json.setFecha(toDateYYYYMMDDHHMMOK(r.getFecha()));
             json.setDetalle(r.getAddres());
             json.setPlaca(r.getAutoPlaca());
             json.setValor(r.getValor().toString());

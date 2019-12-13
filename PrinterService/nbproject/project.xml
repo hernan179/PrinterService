@@ -20,6 +20,7 @@
             <included-library dirs="200">file.reference.jts-1.6.jar</included-library>
             <included-library dirs="200">file.reference.ksoap2-android-assembly-3.0.0-jar-with-dependencies.jar</included-library>
             <included-library dirs="200">file.reference.log4j.jar</included-library>
+            <included-library dirs="200">file.reference.hibernate-core-4.2.4.final.jar</included-library>
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>

@@ -850,6 +850,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.jts-1.6.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.ksoap2-android-assembly-3.0.0-jar-with-dependencies.jar}" todir="${build.classes.dir}"/>
         <copyfiles files="${file.reference.log4j.jar}" todir="${build.classes.dir}"/>
+        <copyfiles files="${file.reference.hibernate-core-4.2.4.final.jar}" todir="${build.classes.dir}"/>
     </target>
     <target if="is.server.weblogic" name="-library-inclusion-in-archive-weblogic">
         <basename file="${file.reference.apache-httpcomponents-httpclient.jar}" property="manifest.file.reference.apache-httpcomponents-httpclient.jar"/>
@@ -863,8 +864,9 @@ exists or setup the property manually. For example like this:
         <basename file="${file.reference.jts-1.6.jar}" property="manifest.file.reference.jts-1.6.jar"/>
         <basename file="${file.reference.ksoap2-android-assembly-3.0.0-jar-with-dependencies.jar}" property="manifest.file.reference.ksoap2-android-assembly-3.0.0-jar-with-dependencies.jar"/>
         <basename file="${file.reference.log4j.jar}" property="manifest.file.reference.log4j.jar"/>
+        <basename file="${file.reference.hibernate-core-4.2.4.final.jar}" property="manifest.file.reference.hibernate-core-4.2.4.final.jar"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update">
-            <attribute name="Extension-List" value="jar-1 jar-2 jar-3 jar-4 jar-5 jar-6 jar-7 jar-8 jar-9 jar-10 jar-11 "/>
+            <attribute name="Extension-List" value="jar-1 jar-2 jar-3 jar-4 jar-5 jar-6 jar-7 jar-8 jar-9 jar-10 jar-11 jar-12 "/>
             <attribute name="jar-1-Extension-Name" value="${manifest.file.reference.apache-httpcomponents-httpclient.jar}"/>
             <attribute name="jar-2-Extension-Name" value="${manifest.file.reference.commons-codec-1.7.jar}"/>
             <attribute name="jar-3-Extension-Name" value="${manifest.file.reference.commons-codec-1.9.jar}"/>
@@ -876,6 +878,7 @@ exists or setup the property manually. For example like this:
             <attribute name="jar-9-Extension-Name" value="${manifest.file.reference.jts-1.6.jar}"/>
             <attribute name="jar-10-Extension-Name" value="${manifest.file.reference.ksoap2-android-assembly-3.0.0-jar-with-dependencies.jar}"/>
             <attribute name="jar-11-Extension-Name" value="${manifest.file.reference.log4j.jar}"/>
+            <attribute name="jar-12-Extension-Name" value="${manifest.file.reference.hibernate-core-4.2.4.final.jar}"/>
         </manifest>
     </target>
     <target depends="compile" name="library-inclusion-in-manifest">
@@ -890,6 +893,7 @@ exists or setup the property manually. For example like this:
         <copyfiles files="${file.reference.jts-1.6.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.ksoap2-android-assembly-3.0.0-jar-with-dependencies.jar}" todir="${dist.ear.dir}/lib"/>
         <copyfiles files="${file.reference.log4j.jar}" todir="${dist.ear.dir}/lib"/>
+        <copyfiles files="${file.reference.hibernate-core-4.2.4.final.jar}" todir="${dist.ear.dir}/lib"/>
         <manifest file="${build.ear.classes.dir}/META-INF/MANIFEST.MF" mode="update"/>
     </target>
     <target name="-copy-meta-inf">

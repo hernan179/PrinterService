@@ -5,6 +5,7 @@
  */
 package com.rta.opain.ws.conn;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.rta.opain.delegate.dto.JsonDTO;
 import static com.rta.opain.delegate.tools.LogTest.rw;
@@ -90,12 +91,6 @@ public class GeoReferenciador {
 
     }
 
-    public static void main(String[] args)throws  Exception{
-        String latitud = "4.6971956";
-                String longitud = "-74.1405186";
-     JsonDTO dd =   zonificadorAndGeoRuteo("av americas 50 15", "11001", latitud, longitud);
-        System.out.println(" metros   "+dd.getMetros());
-    }
 
     public static JsonDTO zonificadorAndGeoRuteo(String direccion, String ciudad, String latitud, String longitud) throws Exception {
         String rta = zonificador(direccion, ciudad);

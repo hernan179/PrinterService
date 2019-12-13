@@ -197,9 +197,9 @@
 
     </head>
 
+   <!--body onload="refrescarSrv();"-->
 
-
-    <body onload="refrescarSrv();">
+    <body>
     <center>
             <img src="logo/nv_viajes.png" height="50" width="200"> 
         <i class="fa fa-automobile" style="font-size:24px"></i>
