@@ -192,7 +192,7 @@
         </Container>
         <Component class="javax.swing.JLabel" name="jLabel4">
           <Properties>
-            <Property name="text" type="java.lang.String" value="V 6.0"/>
+            <Property name="text" type="java.lang.String" value="V 7.0"/>
           </Properties>
         </Component>
       </SubComponents>

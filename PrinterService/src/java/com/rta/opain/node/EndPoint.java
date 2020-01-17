@@ -778,8 +778,9 @@ public class EndPoint implements EndPointRemote {
                     dto = new InitHelper().reimpresion(srv);
                     if (dto != null) {
                         dto.setError("ok");
+                        
                         alertas.add(dto);
-                        // rtaDTO.setAlertas(alertas);
+                        rtaDTO.setAlertas(alertas);
                     }
                 } else {
                     dto = new JsonDTO();
@@ -1101,7 +1102,7 @@ public class EndPoint implements EndPointRemote {
 //                    Sitios sitio = service.sitioById(getNumberInt(tiqueteNuevo.getSitio()));
 //                    Integer start = sitio.getStock();
 //                    tiqueteNuevo.setFuec(start.toString());
-                            String numeroLargo = "4254973012019" + tiqueteNuevo.getNumeroInterno() + tiqueteNuevo.getId();
+                            String numeroLargo = "4254973012020" + tiqueteNuevo.getNumeroInterno() + tiqueteNuevo.getId();
 //                        rw("NumeroLargo: " + numeroLargo);
                             rw("creando servicio..rta..ok.");
                             tiqueteNuevo.setNumeroLargo(numeroLargo);
@@ -1272,13 +1273,30 @@ public class EndPoint implements EndPointRemote {
 
                     }
                     rw("NUEVA_MAC_" + entra[0].mac);
-                    if (entra[0].mac != null && !entra[0].mac.equals("null") && entra[0].mac.toUpperCase().equals("24:00:BA:EF:D3:8B")) {//
+
+                    if (entra[0].mac != null && !entra[0].mac.equals("null") && entra[0].mac.toLowerCase().equals("00:90:4c:8f:47:96")) {//
+                        //rtaDTO.setMac("00:0C:BF:13:35:6F");
+                        rw("NUEVA_MAC_" + entra[0].mac);
+                        rtaDTO.setMac("00:0C:BF:13:6B:2E");
+                    }
+
+                    if (entra[0].mac != null && !entra[0].mac.equals("null") && entra[0].mac.toLowerCase().equals("00:90:4c:59:fc:1f")) {//
                         //rtaDTO.setMac("00:0C:BF:13:35:6F");
                         rw("NUEVA_MAC_" + entra[0].mac);
                         rtaDTO.setMac("00:0C:BF:12:14:AB");
-
                     }
-                    //00:0C:BF:12:14:AB
+
+                    if (entra[0].mac != null && !entra[0].mac.equals("null") && entra[0].mac.toLowerCase().equals("00:90:4c:59:fc:1f")) {//
+                        //rtaDTO.setMac("00:0C:BF:13:35:6F");
+                        rw("NUEVA_MAC_" + entra[0].mac);
+                        rtaDTO.setMac("00:0C:BF:12:14:AB");
+                    }
+
+                    if (entra[0].mac != null && !entra[0].mac.equals("null") && entra[0].mac.toUpperCase().equals("24:00:BA:EF:DE:8B")) {//
+                        //rtaDTO.setMac("00:0C:BF:13:35:6F");
+                        rw("NUEVA_MAC_" + entra[0].mac);
+                        rtaDTO.setMac("00:0C:BF:13:6B:2E");
+                    }
 
                     pesos = gson.toJson(rtaDTO, RtaDTO.class);
                     // rw(json);

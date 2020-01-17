@@ -14,10 +14,10 @@ import java.util.Properties;
  */
 public class Constantes {
 
-      public static final String HOST_GEO = "http://192.168.20.53:8280/GeoReferenciador/GeoController";
-      //public static final String HOST_GEO = "http://213.136.84.4:8280/GeoReferenciador/GeoController";
+//      public static final String HOST_GEO = "http://192.168.20.53:8280/GeoReferenciador/GeoController";
+ //     public static final String HOST_GEO = "http://213.136.84.4:8280/GeoReferenciador/GeoController";
     static Properties pr = getProperties();
-    //public static final String HOST_GEO = pr.getProperty("HOST_GEO");
+    public static final String HOST_GEO = pr.getProperty("HOST_GEO");
 
     public static Properties getProperties() {
 

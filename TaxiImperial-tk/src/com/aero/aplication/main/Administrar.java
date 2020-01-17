@@ -61,14 +61,12 @@ public class Administrar extends javax.swing.JPanel {
      */
     public Administrar() {
         initComponents();
-     
 
-      
         bgroup.add(jbReimpresion);
         bgroup.add(jbAnular);
         try {
-           // String pend = new TiqueteDialog().actualizarContaLocal("ok", sitios.getComprob());
-           // btPaiMent.setText("Sincronizar Pagos (" + pend + ")");
+            // String pend = new TiqueteDialog().actualizarContaLocal("ok", sitios.getComprob());
+            // btPaiMent.setText("Sincronizar Pagos (" + pend + ")");
         } catch (Exception ex) {
         }
 
@@ -87,7 +85,7 @@ public class Administrar extends javax.swing.JPanel {
         } else {
             btPaiMent.setEnabled(false);
         }
-           arg = sitio.getNombre().split("\\|");
+        arg = sitio.getNombre().split("\\|");
         return cajeros;
     }
 
@@ -386,7 +384,7 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             e.printStackTrace();
         }
 
-        String jsonCierre = new WebserviceConnection(host, port).getStatusAccount(getJSONHacerCierre(cajeros.getIdUsuario(),cajeros.getIdSitio(), false));
+        String jsonCierre = new WebserviceConnection(host, port).getStatusAccount(getJSONHacerCierre(cajeros.getIdUsuario(), cajeros.getIdSitio(), false));
 
         String error = "Cierre no encontrado, favor intente nuevamente";
         Cierre cie = new Cierre();
@@ -435,7 +433,7 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         } else if (response == JOptionPane.YES_OPTION) {
             try {
                 pr.load(new FileReader(getCurrentWorkingDirectory() + "/configurar.properties"));
-                jsonCierre = new WebserviceConnection(host, port).getStatusAccount(getJSONHacerCierre(cajeros.getIdUsuario(),cajeros.getIdSitio(), true));
+                jsonCierre = new WebserviceConnection(host, port).getStatusAccount(getJSONHacerCierre(cajeros.getIdUsuario(), cajeros.getIdSitio(), true));
                 if (isOK(jsonCierre)) {
                     RtaDTO obj = gson.fromJson(jsonCierre, RtaDTO.class);
                     for (JsonDTO p : obj.getAlertas()) {
@@ -510,18 +508,18 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     }
 
                     String jsonAnulacion = new WebserviceConnection(host, port).getStatusAccount(getJSONHacerAnulacion(numFactura, PORQUE, sitio.getIdSitio(), arg[0]));
+                    System.out.println("respuesta__"+jsonAnulacion);
                     String error = "No fue posible anular la factura, favor intentelo nuevamente";
-                    
-                     if (isOK(jsonAnulacion)) {
-                 RtaDTO obj = gson.fromJson(jsonAnulacion, RtaDTO.class);
-                 tiquete = obj.getAlertas().get(0).getTiquete();
-                    
-         
-                        
-                        
-                       // System.out.println("tiquete:   " + tiquete);
+
+                    if (jsonAnulacion.contains("ok")) {
+                        RtaDTO obj = gson.fromJson(jsonAnulacion, RtaDTO.class);
+                       // tiquete = obj.getAlertas().get(0).getTiquete();
+
+                        error = "Factura anulada correctamente";
+
+                        // System.out.println("tiquete:   " + tiquete);
                         //  System.out.println("tiquete:   " + tiquete.getComprob()+"   estado"+obj.getEstado());
-                       /* for (JsonDTO p : obj.getAlertas()) {
+                        /* for (JsonDTO p : obj.getAlertas()) {
                             direccionDestino = p.getDireccion();
                             System.out.println("fehca:   " + p.getFecha());
                             if (p.getError().equals("ok")) {
@@ -537,7 +535,7 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     }
                     retA = new Servicios();
 
-                    JOptionPane.showMessageDialog(null, error);
+                    JOptionPane.showMessageDialog(null,"RES_"+ error);
                     msj = "ANULACION";
                 } else if (decorate.equals(REIMPRESION)) {
                     msj = "REIMPRESION";
@@ -545,15 +543,15 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     String jsonReimpresion = new WebserviceConnection(host, port).getStatusAccount(getJSONReimpresion(numFactura, sitio.getIdSitio(), arg[0]));
                     //Ticket factura = null;
                     try {
-                       tiquete = gson.fromJson(jsonReimpresion, Ticket.class);
-                       //tiquete = obj.getAlertas().get(0).getTiquete();
-                        System.out.println("errrrrr____"+tiquete.getError());
+                        tiquete = gson.fromJson(jsonReimpresion, Ticket.class);
+                        //tiquete = obj.getAlertas().get(0).getTiquete();
+                        System.out.println("errrrrr____" + tiquete.getError());
                         //factura = gson.fromJson(jsonReimpresion, Ticket.class);
                         if (tiquete.getError().equals("ok")) {
                             genereFUEC2(tiquete);//generar PDF
 
-                           // if (sitio.getIdSitio().equals("8")) {
-                                generePOST(tiquete, sitio);//iresion impresora POST
+                            // if (sitio.getIdSitio().equals("8")) {
+                            generePOST(tiquete, sitio);//iresion impresora POST
                             //}
                         } else {
                             JOptionPane.showMessageDialog(null, "Factura no disponible para reimpresion");
@@ -712,13 +710,13 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
     public Ticket cargarTKReimp(Ticket tiquete, String msj, JsonDTO p) throws Exception {
         String[] _nits = new LoadPlaca().cargarNits2(tiquete.getPlaca());
-        
-          tiquete.setMarca(_nits[2]);
+
+        tiquete.setMarca(_nits[2]);
         tiquete.setModelo(_nits[3]);
         tiquete.setLogEmpreVehiculo(_nits[4]);
         tiquete.setLogFirmaVehiculo(_nits[5]);
-        tiquete.setAutorizado(_nits[6]); 
-         String dir_nom_nit[] = p.getDireccion().split("\\|");
+        tiquete.setAutorizado(_nits[6]);
+        String dir_nom_nit[] = p.getDireccion().split("\\|");
         tiquete.setDestino(dir_nom_nit[0]);
 
         tiquete.setId(getNumberLong(p.getId()));
@@ -729,14 +727,13 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         CajerosAero cajeroAux = new CajerosAero();
         cajeroAux.setNombre(p.getNombreCajero());
         tiquete.setUsuario(cajeroAux);
-      
+
         tiquete.setTipoPago(msj);
         tiquete.setUrlLogo(_nits[4]);
         tiquete.setFecha(Helper.getColCurrentTime());
         tiquete.setFechaFin(Helper.toDateYYMMDDHHMM(Helper.addDay()));
 
-       // String dir_nom_nit[] = p.getDireccion().split("\\|");
-       
+        // String dir_nom_nit[] = p.getDireccion().split("\\|");
         if (dir_nom_nit.length > 1) {
 
             tiquete.setNombre(dir_nom_nit[1]);
@@ -865,10 +862,10 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             String jsonReimpresionUltFact = new WebserviceConnection(host, port).getStatusAccount(getJSONReimpresionUltimaFactura(getNumberInt(cajeros.getIdUsuario()), arg[0]));
 
             String error = "No hay facturas del usuario";
-          //  System.out.println("rta___"+jsonReimpresionUltFact);
+            //  System.out.println("rta___"+jsonReimpresionUltFact);
             if (isOK(jsonReimpresionUltFact)) {
-                 RtaDTO obj = gson.fromJson(jsonReimpresionUltFact, RtaDTO.class);
-                 tiquete = obj.getAlertas().get(0).getTiquete();
+                RtaDTO obj = gson.fromJson(jsonReimpresionUltFact, RtaDTO.class);
+                tiquete = obj.getAlertas().get(0).getTiquete();
                 /*for (JsonDTO p : obj.getAlertas()) {
                     tiquete.setDestino(p.getDireccion());
                     if (p.getError().equals("ok")) {
@@ -878,8 +875,8 @@ private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     }
 
                 }*/
-                System.out.println("...tiquete....."+tiquete);
-                System.out.println("tiquete....."+tiquete.getPlaca()+"    "+tiquete.getValor());
+                System.out.println("...tiquete....." + tiquete);
+                System.out.println("tiquete....." + tiquete.getPlaca() + "    " + tiquete.getValor());
             } else {
                 error = "no";
             }

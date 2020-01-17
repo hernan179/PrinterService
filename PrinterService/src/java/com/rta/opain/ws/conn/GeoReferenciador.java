@@ -91,30 +91,35 @@ public class GeoReferenciador {
 
     }
 
-
     public static JsonDTO zonificadorAndGeoRuteo(String direccion, String ciudad, String latitud, String longitud) throws Exception {
-        String rta = zonificador(direccion, ciudad);
-        System.out.println("Dir))))))))))))))))))))"+rta);
-        JSONObject json = new JSONObject(rta);
 
-        String latitud2 = json.getString("latitud");
-        String longitud2 = json.getString("longitud");
-        direccion = json.getString("direccion");
-        
+        try {
 
-        String rtaGeoRuteo = geoRuteo(latitud, longitud, latitud2, longitud2);
+            String rta = zonificador(direccion, ciudad);
+            System.out.println("Dir))))))))))))))))))))" + rta);
+            JSONObject json = new JSONObject(rta);
 
-        JSONObject jsonRuteo = new JSONObject(rtaGeoRuteo);
+            String latitud2 = json.getString("latitud");
+            String longitud2 = json.getString("longitud");
+            direccion = json.getString("direccion");
 
-        String metros = jsonRuteo.getString("metros");
-        String minutos = jsonRuteo.getString("minutos");
+            String rtaGeoRuteo = geoRuteo(latitud, longitud, latitud2, longitud2);
 
-        JsonDTO geoRuteoDTO = new JsonDTO();
-        geoRuteoDTO.setMetros(metros);
-        geoRuteoDTO.setDireccion(direccion);
+            JSONObject jsonRuteo = new JSONObject(rtaGeoRuteo);
 
-        rw("metros: " + metros + ", minutos:" + minutos);
-        return geoRuteoDTO;
+            String metros = jsonRuteo.getString("metros");
+            String minutos = jsonRuteo.getString("minutos");
+
+            JsonDTO geoRuteoDTO = new JsonDTO();
+            geoRuteoDTO.setMetros(metros);
+            geoRuteoDTO.setDireccion(direccion);
+
+            rw("metros: " + metros + ", minutos:" + minutos);
+            return geoRuteoDTO;
+        } catch (Exception e) {
+            rw("direccion_"+direccion+"_no_encontrada");
+            return null;
+        }
     }
 
     public static String geoRuteo(String la1, String lo1, String la2, String lo2) throws Exception {

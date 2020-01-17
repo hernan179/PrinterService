@@ -27,12 +27,15 @@ import javax.swing.ImageIcon;
 
 public class CrearDocumento {
 
-    Rectangle pageSize = new Rectangle(200, 500);
+    Rectangle pageSize = new Rectangle(PageSize.POSTCARD);//200,500--ok
+   //  Rectangle pageSize = new Rectangle(164.41f, 14400);
    // Rectangle rectangleOnPage = new Rectangle(10, 10, 100, 100);
     Document document = new Document(pageSize);// mas grande 
+    
+    
+    
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     PdfWriter writer = getPdfWriter(document, baos);
-    // static SimpleDateFormat smdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     Image LOGO;
     Image LOGO_COMPANI;
     Image LOGO_FIRMA;
@@ -102,13 +105,13 @@ public class CrearDocumento {
     void addCopyCliente(Ticket tiquete, Paragraph copia, boolean isCompany) {
         PdfPTable tLogo_1 = new PdfPTable(3);
         try {
-            if (isCompany) {
-                tLogo_1.addCell(obtenerCellColspamBanner("\n"));
-            }
-
-            tLogo_1.addCell(obtenerCellColspamBanner("\n"));
-            tLogo_1.addCell(obtenerCellColspamBanner("\n"));
-            tLogo_1.addCell(obtenerCellColspamBanner(LOGO));
+//            if (isCompany) {
+//                tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+//            }
+//
+//            tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+//            tLogo_1.addCell(obtenerCellColspamBanner("\n"));
+            tLogo_1.addCell(obtenerCellColspamBannerLeft(LOGO));
             if (isCompany) {
                 tLogo_1.addCell(obtenerCellColspamBanner(CONTRATO));
 
@@ -420,9 +423,12 @@ public class CrearDocumento {
     public byte[] generarFactura(Ticket tiquete, Sitios sitio, Properties pr, String reimpresion) throws Exception {
 
         document.open();
+        document.setMargins(1,5,10,10);
         try {
+            System.out.println("busncoando logo............");
             //LOGO = Image.getInstance(getImage("/images/logo_viajes_imperial.jpg"));//
-            LOGO = Image.getInstance(getImage("/images/nv_viajes.png"));//nv_viajes.png
+            LOGO = Image.getInstance(getImage("/images/nv_viajes.jpg"));//nv_viajes.png
+            System.out.println("logo encontrado.............");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -457,67 +463,69 @@ public class CrearDocumento {
 
             String sitioDir = sitio.getDireccion();
             String myStart[] = sitioDir.split("\\|");
+            int size = 6;
+            int sizeMin = 4;
 
-            CONTRATO = new Paragraph(pr.getProperty("CONTRATO"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            ACEPTO = new Paragraph(pr.getProperty("ACEPTO"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            ACEPTO2 = new Paragraph(pr.getProperty("ACEPTO2"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            FIRMA = new Paragraph(pr.getProperty("FIRMA"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            FIRMA_RAYA = new Paragraph(pr.getProperty("FIRMA_RAYA"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            FIRMA2 = new Paragraph(pr.getProperty("FIRMA2"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            FIRMA_RAYA2 = new Paragraph(pr.getProperty("FIRMA_RAYA2"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            GRUPOS = new Paragraph(pr.getProperty("GRUPOS"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            CONTRATISTA = new Paragraph(pr.getProperty("GRUPOS"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            NIT = new Paragraph(pr.getProperty("NIT"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            LINEA = new Paragraph(pr.getProperty("LINEA"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            RESOLUCION = new Paragraph(pr.getProperty("RESOLUCION"), new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.BOLD));
-            RESOLUCION_EX = new Paragraph(pr.getProperty("FECHA"), new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.BOLD));
-            RESOLUCION_EX3 = new Paragraph(pr.getProperty("INTERVALO"), new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.BOLD));
-            RESOLUCION_EX4 = new Paragraph(pr.getProperty("CODIGO"), new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.BOLD));
-            RESOLUCION_EX5 = new Paragraph(pr.getProperty("AVENIDA"), new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.BOLD));
-            AUTORIZADO_EXT = new Paragraph(tiquete.getAutorizado(), new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.BOLD));
-            AUTORIZADO = new Paragraph(pr.getProperty("AUTORIZADO"), new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.BOLD));
-            REPRESENTANTE = new Paragraph(pr.getProperty("REPRESENTANTE"), new Font(Font.FontFamily.TIMES_ROMAN, 6, Font.BOLD));
-            FACTURA = new Paragraph(pr.getProperty("FACTURA"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            FACTURA_EX = new Paragraph(myStart[0] + " No " + tiquete.getId(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            FECHA = new Paragraph("Fecha Ini: ", new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+            CONTRATO = new Paragraph(pr.getProperty("CONTRATO"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            ACEPTO = new Paragraph(pr.getProperty("ACEPTO"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            ACEPTO2 = new Paragraph(pr.getProperty("ACEPTO2"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            FIRMA = new Paragraph(pr.getProperty("FIRMA"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            FIRMA_RAYA = new Paragraph(pr.getProperty("FIRMA_RAYA"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            FIRMA2 = new Paragraph(pr.getProperty("FIRMA2"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            FIRMA_RAYA2 = new Paragraph(pr.getProperty("FIRMA_RAYA2"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            GRUPOS = new Paragraph(pr.getProperty("GRUPOS"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            CONTRATISTA = new Paragraph(pr.getProperty("GRUPOS"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            NIT = new Paragraph(pr.getProperty("NIT"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            LINEA = new Paragraph(pr.getProperty("LINEA"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            RESOLUCION = new Paragraph(pr.getProperty("RESOLUCION"), new Font(Font.FontFamily.TIMES_ROMAN, sizeMin, Font.BOLD));
+            RESOLUCION_EX = new Paragraph(pr.getProperty("FECHA"), new Font(Font.FontFamily.TIMES_ROMAN, sizeMin, Font.BOLD));
+            RESOLUCION_EX3 = new Paragraph(pr.getProperty("INTERVALO"), new Font(Font.FontFamily.TIMES_ROMAN, sizeMin, Font.BOLD));
+            RESOLUCION_EX4 = new Paragraph(pr.getProperty("CODIGO"), new Font(Font.FontFamily.TIMES_ROMAN, sizeMin, Font.BOLD));
+            RESOLUCION_EX5 = new Paragraph(pr.getProperty("AVENIDA"), new Font(Font.FontFamily.TIMES_ROMAN, sizeMin, Font.BOLD));
+            AUTORIZADO_EXT = new Paragraph(tiquete.getAutorizado(), new Font(Font.FontFamily.TIMES_ROMAN, sizeMin, Font.BOLD));
+            AUTORIZADO = new Paragraph(pr.getProperty("AUTORIZADO"), new Font(Font.FontFamily.TIMES_ROMAN, sizeMin, Font.BOLD));
+            REPRESENTANTE = new Paragraph(pr.getProperty("REPRESENTANTE"), new Font(Font.FontFamily.TIMES_ROMAN, sizeMin, Font.BOLD));
+            FACTURA = new Paragraph(pr.getProperty("FACTURA"), new Font(Font.FontFamily.TIMES_ROMAN, sizeMin, Font.BOLD));
+            FACTURA_EX = new Paragraph(myStart[0] + " No " + tiquete.getId(), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            FECHA = new Paragraph("Fecha Ini: ", new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
             try {
                 System.out.println("fecha es: tiquete.getFecha()  " + tiquete.getFecha());
-                FECHA_EX = new Paragraph("" + Helper.toDateYYMMDDHHMM(tiquete.getFecha()), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+                FECHA_EX = new Paragraph("" + Helper.toDateYYMMDDHHMM(tiquete.getFecha()), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
             } catch (RuntimeException e) {
                 System.out.println("fecha es: tiquete.getFecha()  " + tiquete.getFecha());
             }
-            FECHA_END = new Paragraph("Fecha Fin: ", new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            FECHA_EX_END = new Paragraph(tiquete.getFechaFin(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            PLACA = new Paragraph(pr.getProperty("PLACA"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            PLACA_EX = new Paragraph(tiquete.getPlaca(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            MARCA = new Paragraph(pr.getProperty("MARCA"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            MARCA_EX = new Paragraph(tiquete.getMarca(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            MODELO = new Paragraph(pr.getProperty("MODELO"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            MODELO_EX = new Paragraph(tiquete.getModelo(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            ATENDIDO = new Paragraph(pr.getProperty("ATENDIDO"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            ATENDIDO_EX = new Paragraph(tiquete.getUsuario().getNombre(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            ORIGEN = new Paragraph("Origen:", new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+            FECHA_END = new Paragraph("Fecha Fin: ", new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            FECHA_EX_END = new Paragraph(tiquete.getFechaFin(), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            PLACA = new Paragraph(pr.getProperty("PLACA"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            PLACA_EX = new Paragraph(tiquete.getPlaca(), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            MARCA = new Paragraph(pr.getProperty("MARCA"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            MARCA_EX = new Paragraph(tiquete.getMarca(), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            MODELO = new Paragraph(pr.getProperty("MODELO"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            MODELO_EX = new Paragraph(tiquete.getModelo(), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            ATENDIDO = new Paragraph(pr.getProperty("ATENDIDO"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            ATENDIDO_EX = new Paragraph(tiquete.getUsuario().getNombre(), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            ORIGEN = new Paragraph("Origen:", new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
 
-            ORIGEN_EX = new Paragraph(myStart[1], new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            OBSERV = new Paragraph("Obser:", new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            OBSERV_EX = new Paragraph(tiquete.getControl(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+            ORIGEN_EX = new Paragraph(myStart[1], new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            OBSERV = new Paragraph("Obser:", new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            OBSERV_EX = new Paragraph(tiquete.getControl(), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
 
-            DESTINO = new Paragraph(pr.getProperty("DESTINO"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+            DESTINO = new Paragraph(pr.getProperty("DESTINO"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
             tamanio = tiquete.getDestino().length() < 10 ? 10 : 8;
-            DESTINO_EX = new Paragraph(tiquete.getDestino(), new Font(Font.FontFamily.TIMES_ROMAN, tamanio, Font.BOLD));
-            PASAJERO = new Paragraph(pr.getProperty("PASAJERO"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            PASAJERO_EX = new Paragraph(tiquete.getPasajero(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            NOMBRE_CLI = new Paragraph("Nombre Contratante", new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            NIT_CLI = new Paragraph(Helper.getString(tiquete.getNombre()) + " " + Helper.getString(tiquete.getNitCliente()), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            TOTAL = new Paragraph(pr.getProperty("TOTAL"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            TOTAL_EX = new Paragraph("$ " + tiquete.getValor(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            CONDUCTOR = new Paragraph(pr.getProperty("CONDUCTOR"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            CONDUCTOR_EX = new Paragraph(tiquete.getConductor(), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            ESPACIO = new Paragraph("", new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            SENOR = new Paragraph(pr.getProperty("SENOR"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            COPIA_USUARIO = new Paragraph(pr.getProperty("COPIA_USUARIO"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            COPIA_CONDUCTOR = new Paragraph(pr.getProperty("COPIA_CONDUCTOR"), new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
-            COPIA_EMPRESA = new Paragraph(reimpresion, new Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD));
+            DESTINO_EX = new Paragraph(tiquete.getDestino(), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            PASAJERO = new Paragraph(pr.getProperty("PASAJERO"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            PASAJERO_EX = new Paragraph(tiquete.getPasajero(), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            NOMBRE_CLI = new Paragraph("Nombre Contratante", new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            NIT_CLI = new Paragraph(Helper.getString(tiquete.getNombre()) + " " + Helper.getString(tiquete.getNitCliente()), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            TOTAL = new Paragraph(pr.getProperty("TOTAL"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            TOTAL_EX = new Paragraph("$ " + tiquete.getValor(), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            CONDUCTOR = new Paragraph(pr.getProperty("CONDUCTOR"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            CONDUCTOR_EX = new Paragraph(tiquete.getConductor(), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            ESPACIO = new Paragraph("", new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            SENOR = new Paragraph(pr.getProperty("SENOR"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            COPIA_USUARIO = new Paragraph(pr.getProperty("COPIA_USUARIO"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            COPIA_CONDUCTOR = new Paragraph(pr.getProperty("COPIA_CONDUCTOR"), new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
+            COPIA_EMPRESA = new Paragraph(reimpresion, new Font(Font.FontFamily.TIMES_ROMAN, size, Font.BOLD));
 
             addCopyCliente(tiquete, COPIA_EMPRESA, true);
             //addCopyCliente(tiquete, COPIA_EMPRESA, false);
@@ -666,7 +674,7 @@ public class CrearDocumento {
         cell.setColspan(3);
         cell.setPadding(0);
         cell.setBorder(0);
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         return cell;
     }
@@ -690,7 +698,7 @@ public class CrearDocumento {
         cell.setColspan(3);
         cell.setPadding(0);
         cell.setBorder(0);
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         return cell;
     }

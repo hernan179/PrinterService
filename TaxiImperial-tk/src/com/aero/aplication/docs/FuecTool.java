@@ -123,11 +123,14 @@ public class FuecTool {
             table.addCell(crearCelda(datosFuec.getId().toString(), 4, 1, Element.ALIGN_LEFT, Element.ALIGN_LEFT, false));
 
             table.addCell(crearCelda("Contratante:", 1, 1, Element.ALIGN_LEFT, Element.ALIGN_LEFT, true));
+            
             if(datosFuec.getComprob() != null && datosFuec.getComprob().equals("VAI")){
-            table.addCell(crearCelda("PRICESMART Y ", 2, 1, Element.ALIGN_LEFT, Element.ALIGN_LEFT, false));
+            table.addCell(crearCelda("ALMACEN PRICESMART(TRANSPORTE \nFUNCIONARIOS Y CLIENTES CON MEMBRESIA)\n "+datosFuec.getNombre(), 2, 1, Element.ALIGN_LEFT, Element.ALIGN_LEFT, false));
             }else{
             table.addCell(crearCelda(datosFuec.getNombre(), 2, 1, Element.ALIGN_LEFT, Element.ALIGN_LEFT, false));    
             }
+            
+            
             table.addCell(crearCelda("Nit:", 1, 1, Element.ALIGN_LEFT, Element.ALIGN_LEFT, true));
             table.addCell(crearCelda(datosFuec.getNitCliente(), 2, 1, Element.ALIGN_LEFT, Element.ALIGN_LEFT, false));
 

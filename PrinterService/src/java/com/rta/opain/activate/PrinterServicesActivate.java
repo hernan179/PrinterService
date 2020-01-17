@@ -2093,7 +2093,9 @@ public class PrinterServicesActivate implements PrinterServicesActivateRemote {
 
         Integer num = new Integer("" + numero);
         try {
+            rw("___anulacion_factura_"+fecha);
             Date de1 = new DateHelper().restartMinutos(fecha, 1 * 5);
+            
             rw("Anulacion de factura de: " + de1 + "  hasta " + fecha + " id:= " + numero + " sitio: " + sitio.getId());
             String sql = "SELECT s FROM Servicios s WHERE s.numero  = :numero and s.estado  = :estado and s.fecha >= :fecha and s.cierre = :cierre and s.sitio = :sitio";
             Query query = em.createQuery(sql);

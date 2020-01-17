@@ -22,14 +22,13 @@ import java.util.TimeZone;
 public class DateHelper {
 
     public static Date restartMinutos(Date fechaInicio, int minutos) {
-        SimpleDateFormat smdf = new SimpleDateFormat("dd-MM-yyyy");
-        String s1 = smdf.format(fechaInicio);
+
         try {
-            Date d1 = smdf.parse(s1);
-            long tiempoInicial = d1.getTime() - (minutos * 1000 * 60);
-            Date d = new Date(tiempoInicial);
-            return d;
-        } catch (ParseException ex) {
+            Calendar calendar = Calendar.getInstance(); //obtiene la fecha de hoy 
+            calendar.setTime(fechaInicio);
+            calendar.add(Calendar.MINUTE, -minutos);
+            return calendar.getTime();
+        } catch (Exception ex) {
             return fechaInicio;
         }
     }
@@ -324,9 +323,13 @@ public class DateHelper {
     }
 
     public static void main(String[] args) throws Exception {
-        Date fecha = toDateYYYYMMDDHHMM_eror("2019-12-06 13:28");//fecha_Fri Dec 06 17:19:00 COT 2019
-                                                                 //fecha_Fri Dec 06 13:28:00 COT 2019
-        System.out.println("fecha_" + fecha.toString());
+        Date fecha = toDateYYYYMMDDHHMM("2020-01-10 08:24");//fecha_Fri Dec 06 17:19:00 COT 2019
+        //fecha_Fri Dec 06 13:28:00 COT 2019
+        //  System.out.println("fecha_" + fecha.toString());
+
+        System.out.println("diff_" + fecha);
+        Date diff = restartMinutos(fecha, 5);
+        System.out.println("diff_" + diff);
 
 //        
 //        Date fecha = stringToDate("11/01/2018");

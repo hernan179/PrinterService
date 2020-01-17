@@ -153,8 +153,8 @@ public class Helper {
 
                     if (calle > 62 && j == 0) {
                         if (part[0].toUpperCase().contains("CR") && calle > 72) {
-                            long axu = pesos + 7000;
-                            rw("DIRECION VIP CARGO ADD $" + pesos + " + 7000 = " + (axu));
+                            long axu = pesos + 9000;
+                            rw("DIRECION VIP CARGO ADD $" + pesos + " + 9000 = " + (axu));
                             pesos = axu;
                         } else {
                             long axu = pesos + 8000;
